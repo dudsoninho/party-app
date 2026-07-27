@@ -1,8 +1,6 @@
 import os
 
 class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'super-tajne-haslo-imprezowe'
-    DATABASE = os.path.join(os.path.dirname(__file__), 'database.db')
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + DATABASE
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
-    ADMIN_USERS = ['admin', 'magda']
+    SECRET_KEY = 'motylcoin-super-bezpieczny-klucz-sesji'
+    # Wskazanie na bazę danych w głównym folderze
+    DATABASE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'database.db')
