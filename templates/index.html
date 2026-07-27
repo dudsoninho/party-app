@@ -1,33 +1,8 @@
-{% extends 'base.html' %}
-
+{% extends "base.html" %}
 {% block content %}
-<div class="card">
-    <div class="header">
-        <h2>Cześć, {{ user.username }}!</h2>
-        <a href="{{ url_for('main.logout') }}" class="btn-logout">Wyloguj</a>
-    </div>
-    <div class="balance-box">
-        <span>Twoje Monety:</span>
-        <h1 id="user-balance">{{ user.balance }}</h1>
-    </div>
-
-    {% if user.is_admin %}
-    <div class="admin-link">
-        <a href="{{ url_for('main.admin') }}" class="btn-admin">Panel Admina</a>
-    </div>
-    {% endif %}
-
-    <h3>Przekaż monety</h3>
-    <div class="user-list">
-        {% for u in users %}
-        <div class="user-item">
-            <span>{{ u.username }}</span>
-            <div class="transfer-form">
-                <input type="number" id="amount-{{ u.id }}" min="1" value="5">
-                <button onclick="sendCoins({{ u.id }}, '{{ u.username }}')">Wyślij</button>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
+<div class="card" style="max-width: 600px; margin: 50px auto; padding: 30px; background: #181824; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.5);">
+    <h2 style="color: #fff; margin-bottom: 10px;">Cześć, {{ username }}!</h2>
+    <p style="color: #a0a0b0; margin-bottom: 20px;">Witaj w aplikacji Party Coin.</p>
+    <a href="{{ url_for('logout') }}" class="btn" style="display: inline-block; padding: 10px 20px; background: #ff007f; color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold;">Wyloguj się</a>
 </div>
 {% endblock %}
