@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card">
+    <div class="header">
+        <h2>Panel Admina</h2>
+        <a href="{{ url_for('main.index') }}" class="btn-logout">Wróć</a>
+    </div>
+    <div class="user-list">
+        {% for u in users %}
+        <div class="user-item">
+            <span><strong>{{ u.username }}</strong> ({{ u.balance }} pkt)</span> 
+            <div class="transfer-form">
+                <input type="number" id="admin-amount-{{ u.id }}" value="10">
+                <button onclick="adminAddCoins({{ u.id }})">+ Dodaj</button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
