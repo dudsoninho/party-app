@@ -14,10 +14,11 @@
 </head>
 <body>
 <p class="p1"><span class="s1">{% extends "base.html" %}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
 <p class="p1"><span class="s1">{% block content %}</span></p>
-<p class="p1"><span class="s1">&lt;div class="card" style="max-width: 600px; margin: 30px auto; padding: 30px; background: #181824; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.5);"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;h2 style="color: #fff; margin-bottom: 10px;"&gt;Cześć, {{ user.username }}!&lt;/h2&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;p style="color: #a0a0b0; margin-bottom: 10px;"&gt;Witaj w aplikacji Party Coin.&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1">&lt;div class="card"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;h2&gt;Cześć, {{ user.username }}!&lt;/h2&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;p style="color: #a0a0b0; margin-bottom: 10px; text-align: center;"&gt;Witaj w aplikacji MotylCoin.&lt;/p&gt;</span></p>
 <p class="p2"><span class="s1"><span class="Apple-converted-space">    </span></span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>{% with messages = get_flashed_messages(with_categories=true) %}</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>{% if messages %}</span></p>
@@ -29,27 +30,23 @@
 <p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>{% endif %}</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>{% endwith %}</span></p>
 <p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div style="background: #232333; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: center;"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;span style="color: #a0a0b0; font-size: 14px; display: block;"&gt;Twój stan konta:&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;span style="color: #ff007f; font-size: 28px; font-weight: bold;"&gt;{{ user.balance }} COINów&lt;/span&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="balance-card"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;span class="balance-title"&gt;Twój stan konta:&lt;/span&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;span class="balance-amount"&gt;{{ user.balance }} COINów&lt;/span&gt;</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
 <p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div style="background: #232333; padding: 20px; border-radius: 8px; margin: 20px 0;"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="card" style="background: #232333; padding: 20px; border-radius: 8px; margin: 20px 0;"&gt;</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;h3 style="color: #fff; font-size: 18px; margin-bottom: 15px;"&gt;Przelej coiny&lt;/h3&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;form action="{{ url_for('main.transfer') }}" method="POST"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;form id="transfer-form" action="{{ url_for('main.transfer') }}" method="POST"&gt;</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div style="margin-bottom: 12px;"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;label style="color: #a0a0b0; font-size: 13px; display: block; margin-bottom: 5px;"&gt;Nick odbiorcy:&lt;/label&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;input type="text" name="recipient" required style="width: 100%; padding: 10px; background: #181824; border: 1px solid #33334d; border-radius: 6px; color: #fff;"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;label for="receiver"&gt;Nick odbiorcy:&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;input type="text" id="receiver" name="receiver" required placeholder="Wpisz nick..."&gt;</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div style="margin-bottom: 12px;"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;label style="color: #a0a0b0; font-size: 13px; display: block; margin-bottom: 5px;"&gt;Kwota:&lt;/label&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;input type="number" name="amount" min="1" required style="width: 100%; padding: 10px; background: #181824; border: 1px solid #33334d; border-radius: 6px; color: #fff;"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;label for="amount"&gt;Kwota:&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;input type="number" id="amount" name="amount" min="1" required placeholder="0"&gt;</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div style="margin-bottom: 15px;"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;label style="color: #a0a0b0; font-size: 13px; display: block; margin-bottom: 5px;"&gt;Tytuł przelewu:&lt;/label&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;input type="text" name="title" required style="width: 100%; padding: 10px; background: #181824; border: 1px solid #33334d; border-radius: 6px; color: #fff;"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;button type="submit" style="width: 100%; padding: 12px; background: #ff007f; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;"&gt;Wyślij przelew&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;button type="submit" class="btn btn-send"&gt;Wyślij przelew&lt;/button&gt;</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/form&gt;</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
 <p class="p2"><span class="s1"></span><br></p>
@@ -58,8 +55,10 @@
 <p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;img src="data:image/png;base64,{{ qr_code }}" alt="Kod QR użytkownika" style="width: 150px; height: 150px; border-radius: 8px; background: #fff; padding: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);"&gt;</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
 <p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;a href="{{ url_for('main.logout') }}" class="btn" style="display: inline-block; padding: 10px 20px; background: #33334d; color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; text-align: center; width: 100%;"&gt;Wyloguj się&lt;/a&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;a href="{{ url_for('main.logout') }}" class="btn" style="background: #33334d; text-decoration: none; text-align: center; display: block;"&gt;Wyloguj się&lt;/a&gt;</span></p>
 <p class="p1"><span class="s1">&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">&lt;div id="butterfly-container"&gt;&lt;/div&gt;</span></p>
 <p class="p1"><span class="s1">{% endblock %}</span></p>
 </body>
 </html>
