@@ -8,6 +8,7 @@
   <meta name="CocoaVersion" content="2487.6">
   <style type="text/css">
     p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000; min-height: 14.0px}
     span.s1 {font-kerning: none}
   </style>
 </head>
@@ -16,7 +17,14 @@
 <p class="p1"><span class="s1">{% block content %}</span></p>
 <p class="p1"><span class="s1">&lt;div class="card" style="max-width: 600px; margin: 50px auto; padding: 30px; background: #181824; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.5);"&gt;</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;h2 style="color: #fff; margin-bottom: 10px;"&gt;Cześć, {{ user.username }}!&lt;/h2&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;p style="color: #a0a0b0; margin-bottom: 20px;"&gt;Witaj w aplikacji Party Coin.&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;p style="color: #a0a0b0; margin-bottom: 10px;"&gt;Witaj w aplikacji Party Coin.&lt;/p&gt;</span></p>
+<p class="p2"><span class="s1"><span class="Apple-converted-space">    </span></span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;!-- Wyświetlanie stanu coinów --&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div style="background: #232333; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: center;"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;span style="color: #a0a0b0; font-size: 14px; display: block;"&gt;Twój stan konta:&lt;/span&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;span style="color: #ff007f; font-size: 28px; font-weight: bold;"&gt;{{ user.coins }} COINów&lt;/span&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;a href="{{ url_for('main.logout') }}" class="btn" style="display: inline-block; padding: 10px 20px; background: #ff007f; color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold;"&gt;Wyloguj się&lt;/a&gt;</span></p>
 <p class="p1"><span class="s1">&lt;/div&gt;</span></p>
 <p class="p1"><span class="s1">{% endblock %}</span></p>
