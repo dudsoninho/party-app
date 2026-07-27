@@ -18,6 +18,16 @@ def init_db():
             is_admin INTEGER DEFAULT 0
         )
     ''')
+    # Bezpieczne dodanie kolumn, jeśli tabela już istniała bez nich
+    try:
+        cursor.execute('ALTER TABLE users ADD COLUMN coins INTEGER DEFAULT 100')
+    except sqlite3.OperationalError:
+        pass
+    try:
+        cursor.execute('ALTER TABLE users ADD COLUMN is_admin INTEGER DEFAULT 0')
+    except sqlite3.OperationalError:
+        pass
+        
     conn.commit()
     conn.close()
 
