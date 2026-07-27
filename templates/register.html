@@ -1,17 +1,34 @@
-{% extends 'base.html' %}
-
-{% block content %}
-<div class="card">
-    <h2>Zarejestruj się</h2>
-    <form id="register-form" method="POST" action="{{ url_for('register') }}">
-        <div>
-            <label for="username">Nazwa użytkownika</label>
-            <input type="text" id="username" name="username" required placeholder="Wybierz swój nick...">
-        </div>
-        <button type="submit" class="btn">Stwórz konto</button>
-    </form>
-    <p style="margin-top: 15px; text-align: center; font-size: 0.9rem; color: #a0a0b0;">
-        Masz już konto? <a href="{{ url_for('login') }}" style="color: #00dfd8;">Zaloguj się</a>
-    </p>
-</div>
-{% endblock %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2487.6">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000; min-height: 14.0px}
+    span.s1 {font-kerning: none}
+  </style>
+</head>
+<body>
+<p class="p1"><span class="s1">{% extends 'base.html' %}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">{% block content %}</span></p>
+<p class="p1"><span class="s1">&lt;div class="card"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;h2&gt;Zarejestruj się&lt;/h2&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;form id="register-form" method="POST" action="{{ url_for('main.register') }}"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;label for="username"&gt;Nazwa użytkownika&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;input type="text" id="username" name="username" required placeholder="Wybierz swój nick..."&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;button type="submit" class="btn"&gt;Stwórz konto&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/form&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;p style="margin-top: 15px; text-align: center; font-size: 0.9rem; color: #a0a0b0;"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>Masz już konto? &lt;a href="{{ url_for('main.login') }}" style="color: #00dfd8;"&gt;Zaloguj się&lt;/a&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1">{% endblock %}</span></p>
+</body>
+</html>

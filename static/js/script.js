@@ -62,3 +62,4 @@ async function kickUser(userId, username) {
         if (data.success) window.location.reload();
     }
 }
+```[cite: 15]
