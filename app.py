@@ -1,11 +1,11 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session, Blueprint
+from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
+from whitenoise import WhiteNoise
 import sqlite3
 import os
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
+app.wsgi_app = WhiteNoise(app.wsgi_app, root='static/', prefix='static/')
 app.secret_key = 'super-tajny-klucz-zmien-go-na-produkcji'
-
-main_bp = Blueprint('main', __name__)
 
 def get_db_connection():
     conn = sqlite3.connect('database.db')
@@ -15,6 +15,15 @@ def get_db_connection():
 def init_db():
     conn = get_db_connection()
     cursor = conn.cursor()
+    
+    # Automatyczna naprawa bazy na Renderze: 
+    # Sprawdza czy stara tabela nie blokuje nowej struktury z hasłami.
+    try:
+        cursor.execute('SELECT password FROM users LIMIT 1')
+    except sqlite3.OperationalError:
+        cursor.execute('DROP TABLE IF EXISTS transactions')
+        cursor.execute('DROP TABLE IF EXISTS users')
+
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -40,10 +49,10 @@ def init_db():
 
 init_db()
 
-@main_bp.route('/')
+@app.route('/')
 def index():
     if 'user_id' not in session:
-        return redirect(url_for('main.login'))
+        return redirect(url_for('login'))
     
     conn = get_db_connection()
     user = conn.execute('SELECT * FROM users WHERE id = ?', (session['user_id'],)).fetchone()
@@ -52,15 +61,15 @@ def index():
     
     if not user:
         session.clear()
-        return redirect(url_for('main.login'))
+        return redirect(url_for('login'))
         
     return render_template('index.html', user=user, users=users)
 
-@main_bp.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '').strip()
         
         conn = get_db_connection()
         user = conn.execute('SELECT * FROM users WHERE username = ? AND password = ?', (username, password)).fetchone()
@@ -70,40 +79,80 @@ def login():
             session['user_id'] = user['id']
             session['username'] = user['username']
             session['is_admin'] = user['is_admin']
-            return redirect(url_for('main.index'))
+            return redirect(url_for('index'))
         else:
             flash('Nieprawidłowa nazwa użytkownika lub hasło')
             
     return render_template('login.html')
 
-@main_bp.route('/register', methods=['GET', 'POST'])
+@app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '').strip()
+        
+        if not username or not password:
+            flash('Uzupełnij wszystkie pola!')
+            return render_template('register.html')
+
+        is_admin = 1 if username.lower() in ['admin', 'magda'] else 0
         
         conn = get_db_connection()
         try:
-            conn.execute('INSERT INTO users (username, password, balance) VALUES (?, ?, ?)', (username, password, 100))
+            conn.execute('INSERT INTO users (username, password, is_admin, balance) VALUES (?, ?, ?, 100)', 
+                         (username, password, is_admin))
             conn.commit()
             conn.close()
             flash('Konto utworzone! Możesz się zalogować.')
-            return redirect(url_for('main.login'))
+            return redirect(url_for('login'))
         except sqlite3.IntegrityError:
             conn.close()
             flash('Użytkownik o takiej nazwie już istnieje!')
             
     return render_template('register.html')
 
-@main_bp.route('/logout')
+@app.route('/transfer', methods=['POST'])
+def transfer():
+    if 'user_id' not in session:
+        return jsonify({'success': False, 'message': 'Niezalogowany'}), 401
+        
+    sender_id = session['user_id']
+    receiver_id = request.form.get('receiver_id')
+    
+    try:
+        amount = int(request.form.get('amount', 0))
+    except ValueError:
+        return jsonify({'success': False, 'message': 'Niepoprawna kwota'}), 400
+
+    if amount <= 0:
+        return jsonify({'success': False, 'message': 'Kwota musi być większa od 0'}), 400
+        
+    conn = get_db_connection()
+    sender = conn.execute('SELECT balance FROM users WHERE id = ?', (sender_id,)).fetchone()
+    
+    if not sender or sender['balance'] < amount:
+        conn.close()
+        return jsonify({'success': False, 'message': 'Brak wystarczających środków'}), 400
+        
+    cursor = conn.cursor()
+    cursor.execute('UPDATE users SET balance = balance - ? WHERE id = ?', (amount, sender_id))
+    cursor.execute('UPDATE users SET balance = balance + ? WHERE id = ?', (amount, receiver_id))
+    cursor.execute('INSERT INTO transactions (sender_id, receiver_id, amount) VALUES (?, ?, ?)', 
+                   (sender_id, receiver_id, amount))
+    conn.commit()
+    conn.close()
+    
+    return jsonify({'success': True, 'message': 'Przelew wysłany!'})
+
+@app.route('/logout')
 def logout():
     session.clear()
-    return redirect(url_for('main.login'))
+    return redirect(url_for('login'))
 
-@main_bp.route('/admin')
+@app.route('/admin')
 def admin():
     if 'user_id' not in session or not session.get('is_admin'):
-        return redirect(url_for('main.index'))
+        return redirect(url_for('index'))
         
     conn = get_db_connection()
     users = conn.execute('SELECT * FROM users').fetchall()
@@ -111,7 +160,23 @@ def admin():
     
     return render_template('admin.html', users=users)
 
-app.register_blueprint(main_bp)
+@app.route('/admin/add_coins', methods=['POST'])
+def admin_add_coins():
+    if 'user_id' not in session or not session.get('is_admin'):
+        return jsonify({'success': False, 'message': 'Brak uprawnień'}), 403
+
+    user_id = request.form.get('user_id')
+    try:
+        amount = int(request.form.get('amount', 0))
+    except ValueError:
+        return jsonify({'success': False, 'message': 'Niepoprawna kwota'}), 400
+
+    conn = get_db_connection()
+    conn.execute('UPDATE users SET balance = balance + ? WHERE id = ?', (amount, user_id))
+    conn.commit()
+    conn.close()
+    
+    return jsonify({'success': True})
 
 if __name__ == '__main__':
     app.run(debug=True)
