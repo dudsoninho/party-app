@@ -5,7 +5,7 @@ import os
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 app.wsgi_app = WhiteNoise(app.wsgi_app, root='static/', prefix='static/')
-app.secret_key = 'super-tajny-klucz-zmien-go-na-produkcji'
+app.secret_key = 'motylcoin-super-bezpieczny-klucz-sesji'
 
 def get_db_connection():
     conn = sqlite3.connect('database.db')
@@ -16,14 +16,7 @@ def init_db():
     conn = get_db_connection()
     cursor = conn.cursor()
     
-    # Automatyczna naprawa bazy na Renderze: 
-    # Sprawdza czy stara tabela nie blokuje nowej struktury z hasłami.
-    try:
-        cursor.execute('SELECT password FROM users LIMIT 1')
-    except sqlite3.OperationalError:
-        cursor.execute('DROP TABLE IF EXISTS transactions')
-        cursor.execute('DROP TABLE IF EXISTS users')
-
+    # Tworzenie tabel, jeśli nie istnieją
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -44,12 +37,22 @@ def init_db():
             FOREIGN KEY (receiver_id) REFERENCES users (id)
         )
     ''')
+    
+    # Bezpieczna migracja kolumny hasła w razie potrzeby
+    cursor.execute("PRAGMA table_info(users)")
+    columns = [column[1] for column in cursor.fetchall()]
+    if 'password' not in columns:
+        try:
+            cursor.execute('ALTER TABLE users ADD COLUMN password TEXT NOT NULL DEFAULT ""')
+        except sqlite3.OperationalError:
+            pass
+            
     conn.commit()
     conn.close()
 
 init_db()
 
-@app.route('/')
+@app.route('/', strict_slashes=False)
 def index():
     if 'user_id' not in session:
         return redirect(url_for('login'))
@@ -65,7 +68,7 @@ def index():
         
     return render_template('index.html', user=user, users=users)
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'], strict_slashes=False)
 def login():
     if request.method == 'POST':
         username = request.form.get('username', '').strip()
@@ -85,7 +88,7 @@ def login():
             
     return render_template('login.html')
 
-@app.route('/register', methods=['GET', 'POST'])
+@app.route('/register', methods=['GET', 'POST'], strict_slashes=False)
 def register():
     if request.method == 'POST':
         username = request.form.get('username', '').strip()
@@ -111,7 +114,7 @@ def register():
             
     return render_template('register.html')
 
-@app.route('/transfer', methods=['POST'])
+@app.route('/transfer', methods=['POST'], strict_slashes=False)
 def transfer():
     if 'user_id' not in session:
         return jsonify({'success': False, 'message': 'Niezalogowany'}), 401
@@ -144,12 +147,12 @@ def transfer():
     
     return jsonify({'success': True, 'message': 'Przelew wysłany!'})
 
-@app.route('/logout')
+@app.route('/logout', strict_slashes=False)
 def logout():
     session.clear()
     return redirect(url_for('login'))
 
-@app.route('/admin')
+@app.route('/admin', strict_slashes=False)
 def admin():
     if 'user_id' not in session or not session.get('is_admin'):
         return redirect(url_for('index'))
@@ -160,7 +163,7 @@ def admin():
     
     return render_template('admin.html', users=users)
 
-@app.route('/admin/add_coins', methods=['POST'])
+@app.route('/admin/add_coins', methods=['POST'], strict_slashes=False)
 def admin_add_coins():
     if 'user_id' not in session or not session.get('is_admin'):
         return jsonify({'success': False, 'message': 'Brak uprawnień'}), 403
