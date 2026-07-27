@@ -1,13 +1,27 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
 from whitenoise import WhiteNoise
+import sqlite3
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'super-secret-key-party-app')
 app.wsgi_app = WhiteNoise(app.wsgi_app, root='static/', prefix='static/')
 
-# Przykładowa baza w pamięci (zastąp własną logiką, jeśli masz)
-users = {}
+def init_db():
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE NOT NULL,
+            coins INTEGER DEFAULT 100,
+            is_admin INTEGER DEFAULT 0
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
+init_db()
 
 @app.route('/')
 def index():
@@ -18,24 +32,19 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        # Obsługa formularza oraz zapytania JSON z JavaScriptu
-        username = None
-        if request.is_json:
-            data = request.get_json() or {}
-            username = data.get('username')
-        else:
-            username = request.form.get('username')
-
+        username = request.form.get('username')
         if username:
+            conn = sqlite3.connect('database.db')
+            cursor = conn.cursor()
+            cursor.execute('SELECT * FROM users WHERE username = ?', (username,))
+            user = cursor.fetchone()
+            if not user:
+                cursor.execute('INSERT INTO users (username, coins, is_admin) VALUES (?, 100, 0)', (username,))
+                conn.commit()
+            conn.close()
+            
             session['username'] = username
-            if request.is_json:
-                return jsonify({"success": True})
             return redirect(url_for('index'))
-        
-        if request.is_json:
-            return jsonify({"success": False, "message": "Podaj nazwę użytkownika"}), 400
-        flash('Podaj nazwę użytkownika', 'danger')
-
     return render_template('login.html')
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -43,6 +52,15 @@ def register():
     if request.method == 'POST':
         username = request.form.get('username')
         if username:
+            conn = sqlite3.connect('database.db')
+            cursor = conn.cursor()
+            try:
+                cursor.execute('INSERT INTO users (username, coins, is_admin) VALUES (?, 100, 0)', (username,))
+                conn.commit()
+            except sqlite3.IntegrityError:
+                pass
+            conn.close()
+            
             session['username'] = username
             return redirect(url_for('index'))
     return render_template('register.html')
