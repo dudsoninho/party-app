@@ -30,9 +30,6 @@ class Transaction(db.Model):
 
     sender = db.relationship('User', foreign_keys=[sender_id], backref='sent_transactions')
     receiver = db.relationship('User', foreign_keys=[receiver_id], backref='received_transactions')
-from datetime import datetime
-
-# --- Istniejące modele User, ShopItem, Transaction zostają bez zmian ---
 
 class Quest(db.Model):
     id = db.Column(db.Integer, primary_key=True)

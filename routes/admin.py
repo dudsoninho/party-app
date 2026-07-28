@@ -23,7 +23,7 @@ def admin_panel():
     five_minutes_ago = datetime.utcnow() - timedelta(minutes=5)
     online_users = [u for u in users if getattr(u, 'last_active', None) and u.last_active >= five_minutes_ago]
 
-    # Pobieramy zgłoszenia wyzwań oczekujące na akceptację Admina (dla Trybu Weryfikacji)
+    # Pobieramy zgłoszenia wyzwań oczekujące na akceptację Admina
     pending_submissions = QuestSubmission.query.filter_by(status='pending').order_by(QuestSubmission.created_at.asc()).all()
 
     return render_template(
@@ -44,10 +44,14 @@ def add_shop_item():
     icon = request.form.get('icon', '🍹')
 
     if name and price:
-        item = ShopItem(name=name, price=float(price), description=description, icon=icon)
-        db.session.add(item)
-        db.session.commit()
-        flash('Dodano nowy przedmiot do sklepu!', 'success')
+        try:
+            # Konwersja na int zgodna z rozmiarem waluty w models.py
+            item = ShopItem(name=name, price=int(price), description=description, icon=icon)
+            db.session.add(item)
+            db.session.commit()
+            flash('Dodano nowy przedmiot do sklepu!', 'success')
+        except ValueError:
+            flash('Cena musi być liczbą całkowitą!', 'danger')
     else:
         flash('Wypełnij wszystkie wymagane pola.', 'warning')
 
@@ -72,9 +76,13 @@ def set_balance(user_id):
     user = User.query.get_or_404(user_id)
     new_balance = request.form.get('balance')
     if new_balance is not None:
-        user.balance = float(new_balance)
-        db.session.commit()
-        flash(f'Zmieniono saldo użytkownika {user.username} na {user.balance} MC.', 'success')
+        try:
+            # Konwersja na int zgodna z typem Integer w modelu User
+            user.balance = int(new_balance)
+            db.session.commit()
+            flash(f'Zmieniono saldo użytkownika {user.username} na {user.balance} MC.', 'success')
+        except ValueError:
+            flash('Saldo musi być liczbą całkowitą!', 'danger')
     return redirect(url_for('admin.admin_panel'))
 
 @admin_bp.route('/reset_all', methods=['POST'])
@@ -118,7 +126,7 @@ def create_quest():
     mode = request.form.get('mode', 'auto')
 
     if title:
-        # Dezaktywujemy poprzednie aktywne wyzwania
+        # Dezaktywujemy poprzednie wyzwania
         Quest.query.filter_by(is_active=True).update({Quest.is_active: False})
         
         new_quest = Quest(title=title, reward=reward, duration_seconds=duration, mode=mode)
