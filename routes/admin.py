@@ -21,24 +21,30 @@ def admin_panel():
     
     # Użytkownik uznawany za aktywnego, jeśli wykonał akcję w ciągu ostatnich 5 minut
     five_minutes_ago = datetime.utcnow() - timedelta(minutes=5)
-    online_users = [u for u in users if u.last_active and u.last_active >= five_minutes_ago]
+    online_users = [u for u in users if getattr(u, 'last_active', None) and u.last_active >= five_minutes_ago]
 
     return render_template('admin.html', users=users, items=items, transactions=transactions, online_users=online_users)
 
 @admin_bp.route('/add_item', methods=['POST'])
-def add_item():
+@admin_bp.route('/add-item', methods=['POST'])
+def add_shop_item():
     name = request.form.get('name')
-    price = int(request.form.get('price', 0))
+    price = request.form.get('price', 0)
     description = request.form.get('description', '')
     icon = request.form.get('icon', '🍹')
 
-    item = ShopItem(name=name, price=price, description=description, icon=icon)
-    db.session.add(item)
-    db.session.commit()
-    flash('Dodano nowy przedmiot do sklepu!', 'success')
+    if name and price:
+        item = ShopItem(name=name, price=float(price), description=description, icon=icon)
+        db.session.add(item)
+        db.session.commit()
+        flash('Dodano nowy przedmiot do sklepu!', 'success')
+    else:
+        flash('Wypełnij wszystkie wymagane pola.', 'warning')
+
     return redirect(url_for('admin.admin_panel'))
 
 @admin_bp.route('/delete_user/<int:user_id>', methods=['POST'])
+@admin_bp.route('/delete-user/<int:user_id>', methods=['POST'])
 def delete_user(user_id):
     user = User.query.get_or_404(user_id)
     if user.is_admin == 1:
@@ -51,12 +57,14 @@ def delete_user(user_id):
     return redirect(url_for('admin.admin_panel'))
 
 @admin_bp.route('/set_balance/<int:user_id>', methods=['POST'])
+@admin_bp.route('/set-balance/<int:user_id>', methods=['POST'])
 def set_balance(user_id):
     user = User.query.get_or_404(user_id)
-    new_balance = int(request.form.get('balance', 0))
-    user.balance = new_balance
-    db.session.commit()
-    flash(f'Zmieniono saldo użytkownika {user.username} na {new_balance} MC.', 'success')
+    new_balance = request.form.get('balance')
+    if new_balance is not None:
+        user.balance = float(new_balance)
+        db.session.commit()
+        flash(f'Zmieniono saldo użytkownika {user.username} na {user.balance} MC.', 'success')
     return redirect(url_for('admin.admin_panel'))
 
 @admin_bp.route('/reset_all', methods=['POST'])
