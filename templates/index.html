@@ -25,6 +25,11 @@
         <a class="navbar-brand fw-bold" href="#"><i class="fa-solid fa-butterfly text-warning"></i> MotylCoin App</a>
         <div class="d-flex align-items-center gap-3">
             <span class="text-light">Cześć, <strong>{{ user.username }}</strong>! (ID: {{ user.user_code }})</span>
+            {% if user.is_admin %}
+                <a href="{{ url_for('admin.index') }}" class="btn btn-warning btn-sm fw-bold">
+                    <i class="fa-solid fa-crown me-1"></i> Panel Admina
+                </a>
+            {% endif %}
             <a href="{{ url_for('main.logout') }}" class="btn btn-outline-danger btn-sm">Wyloguj</a>
         </div>
     </div>
