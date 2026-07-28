@@ -162,3 +162,67 @@ def buy_item(item_id):
 
     flash(f'Zakupiono: {item.name} za {item.price} MC!', 'success')
     return redirect(url_for('main.index'))
+
+from datetime import datetime, timedelta
+from models import Quest, QuestSubmission
+
+@main_bp.route('/api/active-quest')
+def active_quest():
+    user_id = session.get('user_id')
+    if not user_id:
+        return {'active': False}
+
+    quest = Quest.query.filter_by(is_active=True).order_by(Quest.created_at.desc()).first()
+    if not quest:
+        return {'active': False}
+
+    # Sprawdzamy czy czas nie minął
+    expires_at = quest.created_at + timedelta(seconds=quest.duration_seconds)
+    now = datetime.utcnow()
+    
+    if now > expires_at:
+        quest.is_active = False
+        db.session.commit()
+        return {'active': False}
+
+    # Sprawdzamy czy użytkownik już brał udział
+    sub = QuestSubmission.query.filter_by(quest_id=quest.id, user_id=user_id).first()
+    
+    return {
+        'active': True,
+        'id': quest.id,
+        'title': quest.title,
+        'reward': quest.reward,
+        'mode': quest.mode,
+        'remaining_seconds': int((expires_at - now).total_seconds()),
+        'submitted': sub is not None,
+        'status': sub.status if sub else None
+    }
+
+@main_bp.route('/api/claim-quest/<int:quest_id>', methods=['POST'])
+def claim_quest(quest_id):
+    user_id = session.get('user_id')
+    if not user_id:
+        return {'success': False, 'message': 'Niezalogowany'}, 401
+
+    quest = Quest.query.get_or_404(quest_id)
+    user = User.query.get(user_id)
+
+    # Sprawdzamy czy już zgłoszono
+    existing = QuestSubmission.query.filter_by(quest_id=quest.id, user_id=user_id).first()
+    if existing:
+        return {'success': False, 'message': 'Już odebrano!'}
+
+    if quest.mode == 'auto':
+        # Tryb Ufny: Natychmiastowe przyznanie monet
+        sub = QuestSubmission(quest_id=quest.id, user_id=user_id, status='approved')
+        user.balance += quest.reward
+        db.session.add(sub)
+        db.session.commit()
+        return {'success': True, 'mode': 'auto', 'reward': quest.reward, 'new_balance': user.balance}
+    else:
+        # Tryb Weryfikacji: Czeka na akceptację Admina
+        sub = QuestSubmission(quest_id=quest.id, user_id=user_id, status='pending')
+        db.session.add(sub)
+        db.session.commit()
+        return {'success': True, 'mode': 'manual'}

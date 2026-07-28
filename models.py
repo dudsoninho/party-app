@@ -30,3 +30,25 @@ class Transaction(db.Model):
 
     sender = db.relationship('User', foreign_keys=[sender_id], backref='sent_transactions')
     receiver = db.relationship('User', foreign_keys=[receiver_id], backref='received_transactions')
+from datetime import datetime
+
+# --- Istniejące modele User, ShopItem, Transaction zostają bez zmian ---
+
+class Quest(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    reward = db.Column(db.Integer, nullable=False)
+    duration_seconds = db.Column(db.Integer, nullable=False)
+    mode = db.Column(db.String(20), default='auto') # 'auto' lub 'manual'
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    is_active = db.Column(db.Boolean, default=True)
+
+class QuestSubmission(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    quest_id = db.Column(db.Integer, db.ForeignKey('quest.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    status = db.Column(db.String(20), default='pending') # 'pending', 'approved', 'rejected'
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    quest = db.relationship('Quest', backref='submissions')
+    user = db.relationship('User', backref='quest_submissions')

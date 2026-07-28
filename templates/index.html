@@ -3,30 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MotylCoin App</title>
+    <title>MotylCoin - Portfel</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body {
-            background-color: #121212;
-            color: #ffffff;
-        }
-        .card {
-            background-color: #1e1e1e;
-            border-color: #333333;
-        }
-        .form-control {
-            background-color: #2b2b2b;
-            border-color: #444444;
-            color: #ffffff;
-        }
-        .form-control:focus {
-            background-color: #333333;
-            color: #ffffff;
-            border-color: #0d6efd;
-            box-shadow: none;
-        }
-        .form-control::placeholder {
-            color: #888888;
+        body { background-color: #121212; color: #ffffff; }
+        .card { background-color: #1e1e1e; border-color: #333333; }
+        .form-control, .form-select { background-color: #2b2b2b; border-color: #444444; color: #ffffff; }
+        .form-control:focus, .form-select:focus { background-color: #333333; color: #ffffff; border-color: #0d6efd; box-shadow: none; }
+        .form-control::placeholder { color: #888888; }
+        .pulse-timer { animation: pulse 1s infinite; }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1); }
         }
     </style>
 </head>
@@ -34,18 +23,15 @@
 
 <div class="container py-4" style="max-width: 500px;">
 
-    <!-- Nagłówek i Nawigacja -->
+    <!-- Nagłówek -->
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
-            <h4 class="mb-0 fw-bold text-white">Witaj, {{ user.username }}!</h4>
-            <small class="text-muted">Twój kod: <strong class="text-primary">{{ user.user_code }}</strong></small>
+            <h4 class="mb-0 fw-bold">Witaj, {{ user.username }}!</h4>
+            <small class="text-muted">Twój kod: <span class="font-monospace text-warning fw-bold">{{ user.user_code }}</span></small>
         </div>
-        <div>
-            {% if user.is_admin == 1 %}
-                <a href="{{ url_for('admin.admin_panel') }}" class="btn btn-sm btn-warning font-weight-bold me-1">⚙️ Admin</a>
-            {% endif %}
-            <a href="{{ url_for('main.logout') }}" class="btn btn-sm btn-outline-danger">Wyloguj</a>
-        </div>
+        {% if user.is_admin == 1 %}
+            <a href="{{ url_for('admin.admin_panel') }}" class="btn btn-outline-warning btn-sm fw-bold">⚙️ Admin</a>
+        {% endif %}
     </div>
 
     <!-- Powiadomienia Flash -->
@@ -60,138 +46,219 @@
         {% endif %}
     {% endwith %}
 
-    <!-- Karta Salda i Kod QR -->
-    <div class="card shadow-sm mb-4 border-primary">
-        <div class="card-body text-center p-4">
-            <span class="text-muted text-uppercase small">Stan konta</span>
-            <h1 class="display-4 fw-bold my-2 text-warning">{{ user.balance }} <small class="fs-4">MC</small></h1>
-            
+    <!-- Stan Konta -->
+    <div class="card mb-4 text-center border-primary shadow">
+        <div class="card-body py-4">
+            <span class="text-muted text-uppercase small fw-bold">STAN KONTA</span>
+            <h1 class="display-4 fw-bold text-primary my-2">{{ user.balance }} <small class="fs-4">MC</small></h1>
             {% if qr_code %}
                 <div class="mt-3">
-                    <img src="data:image/png;base64,{{ qr_code }}" alt="Kod QR" class="img-fluid rounded border border-light" style="max-width: 150px;">
-                    <div class="mt-1"><small class="text-muted" style="font-size: 0.75rem;">Zeskanuj, aby łatwo wysłać przelew</small></div>
+                    <img src="data:image/png;base64,{{ qr_code }}" alt="Kod QR Przelewu" class="img-fluid rounded border border-secondary p-2 bg-white" style="max-width: 150px;">
+                    <small class="d-block text-muted mt-1">Zeskanuj, aby łatwo wysłać przelew</small>
                 </div>
             {% endif %}
         </div>
     </div>
 
-    <!-- Formularz przelewu P2P -->
-    <div class="card shadow-sm mb-4">
-        <div class="card-header fw-bold border-bottom border-secondary text-white">
+    <!-- Przelew -->
+    <div class="card mb-4">
+        <div class="card-header fw-bold border-bottom border-secondary">
             💸 Wyślij MotylCoiny
         </div>
         <div class="card-body">
-            <form action="{{ url_for('main.transfer') }}" method="POST">
-                <div class="mb-2">
-                    <input type="text" name="receiver_id" class="form-control" placeholder="Odbiorca (Nick lub Kod ID)" required>
-                </div>
-                <div class="mb-2">
-                    <input type="number" name="amount" class="form-control" placeholder="Kwota (MC)" min="1" required>
+            <form action="{{ url_for('main.send_coins') }}" method="POST">
+                <div class="mb-3">
+                    <input type="text" name="receiver_code" class="form-control" placeholder="Kod odbiorcy (np. 1234)" required>
                 </div>
                 <div class="mb-3">
-                    <input type="text" name="title" class="form-control" placeholder="Tytuł (np. Za drinka, Za zakład)" maxlength="50">
+                    <input type="number" name="amount" class="form-control" placeholder="Kwota (MC)" step="0.5" min="0.5" required>
                 </div>
-                <button type="submit" class="btn btn-primary w-100 fw-bold">Wyślij przelew</button>
+                <div class="mb-3">
+                    <input type="text" name="title" class="form-control" placeholder="Tytuł przelewu (opcjonalnie)">
+                </div>
+                <button type="submit" class="btn btn-primary w-100 fw-bold py-2">Wyślij przelew</button>
             </form>
         </div>
     </div>
 
-    <!-- Dynamiczny Activity Feed: Historia Transakcji -->
-    <div class="card shadow-sm mb-4">
-        <div class="card-header fw-bold d-flex justify-content-between align-items-center border-bottom border-secondary text-white">
-            <span>📜 Historia Transakcji</span>
-            <small class="text-muted">Ostatnie akcje</small>
-        </div>
-        
-        <div class="card-body p-2" style="max-height: 350px; overflow-y: auto;">
-            {% if history %}
-                <div class="list-group list-group-flush">
-                    {% for tx in history %}
-                        <div class="list-group-item bg-transparent text-white border-bottom border-secondary px-2 py-2 d-flex align-items-center justify-content-between">
-                            
-                            <div class="d-flex align-items-center">
-                                <!-- Ikona statusu -->
-                                {% if tx.sender_id == user.id %}
-                                    <div class="badge rounded-circle bg-danger text-white me-2" style="font-size: 1rem; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
-                                        ↑
-                                    </div>
-                                {% else %}
-                                    <div class="badge rounded-circle bg-success text-white me-2" style="font-size: 1rem; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
-                                        ↓
-                                    </div>
-                                {% endif %}
-
-                                <!-- Szczegóły transakcji -->
-                                <div>
-                                    <div class="fw-bold">
-                                        {% if tx.sender_id == user.id %}
-                                            Do: <span class="text-light">{{ tx.receiver.username }}</span>
-                                        {% else %}
-                                            Od: <span class="text-light">{{ tx.sender.username }}</span>
-                                        {% endif %}
-                                        {% if tx.is_reverted %}
-                                            <span class="badge bg-warning text-dark ms-1">Cofnięta</span>
-                                        {% endif %}
-                                    </div>
-                                    <div class="text-muted small" style="font-size: 0.8rem;">
-                                        {{ tx.title }}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Kwota i Czas -->
-                            <div class="text-end">
-                                <div class="fw-bold {% if tx.sender_id == user.id %}text-danger{% else %}text-success{% endif %}">
-                                    {% if tx.sender_id == user.id %}-{% else %}+{% endif %}{{ tx.amount }} MC
-                                </div>
-                                <small class="text-muted" style="font-size: 0.75rem;">
-                                    {{ tx.timestamp.strftime('%H:%M | %d.%m') }}
-                                </small>
-                            </div>
-
-                        </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div class="p-4 text-center text-muted">
-                    <p class="mb-0">Brak historii przelewów.</p>
-                    <small>Wyślij swoje pierwsze MotylCoiny!</small>
-                </div>
-            {% endif %}
-        </div>
-    </div>
-
-    <!-- Oferty / Sklep z Drinkami -->
-    <div class="card shadow-sm mb-4">
-        <div class="card-header fw-bold border-bottom border-secondary text-white">
+    <!-- Sklep / Bar -->
+    <div class="card mb-4">
+        <div class="card-header fw-bold border-bottom border-secondary">
             🍹 Sklep / Bar
         </div>
-        <div class="card-body p-2">
+        <div class="card-body">
             {% if shop_items %}
                 <div class="row g-2">
                     {% for item in shop_items %}
                         <div class="col-6">
-                            <div class="card h-100 bg-dark text-white border-secondary p-2 text-center">
-                                <div class="fs-2">{{ item.icon }}</div>
-                                <div class="fw-bold mt-1">{{ item.name }}</div>
-                                <small class="text-muted mb-2">{{ item.description }}</small>
-                                <form action="{{ url_for('main.buy_item', item_id=item.id) }}" method="POST" class="mt-auto">
-                                    <button type="submit" class="btn btn-sm btn-outline-warning w-100 fw-bold">
-                                        Kup za {{ item.price }} MC
-                                    </button>
-                                </form>
+                            <div class="p-3 border rounded border-secondary bg-dark text-center h-100 d-flex flex-column justify-content-between">
+                                <div>
+                                    <div class="fs-1 mb-1">{{ item.icon }}</div>
+                                    <h6 class="fw-bold mb-1">{{ item.name }}</h6>
+                                    <small class="text-muted d-block mb-2">{{ item.description }}</small>
+                                </div>
+                                <span class="badge bg-success fs-6">{{ item.price }} MC</span>
                             </div>
                         </div>
                     {% endfor %}
                 </div>
             {% else %}
-                <div class="p-3 text-center text-muted">Sklep jest obecnie pusty.</div>
+                <p class="text-muted text-center my-2">Sklep jest obecnie pusty.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Historia Transakcji -->
+    <div class="card mb-4">
+        <div class="card-header fw-bold border-bottom border-secondary">
+            📜 Historia Transakcji
+        </div>
+        <div class="card-body p-0">
+            {% if history %}
+                <ul class="list-group list-group-flush">
+                    {% for tx in history %}
+                        <li class="list-group-item bg-dark text-white border-secondary d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>
+                                    {% if tx.sender_id == user.id %} ↑ Do: {{ tx.receiver.username }} {% else %} ↓ Od: {{ tx.sender.username }} {% endif %}
+                                </strong>
+                                {% if tx.is_reverted %}<span class="badge bg-danger ms-1">Cofnięta</span>{% endif %}
+                                <small class="d-block text-muted">{{ tx.title if tx.title else 'Przelew' }} • {{ tx.timestamp.strftime('%H:%M | %d.%m') }}</small>
+                            </div>
+                            <span class="fw-bold {% if tx.sender_id == user.id %}text-danger{% else %}text-success{% endif %}">
+                                {% if tx.sender_id == user.id %}-{% else %}+{% endif %}{{ tx.amount }} MC
+                            </span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-muted text-center my-3">Brak historii przelewów.<br><small>Wyślij swoje pierwsze MotylCoiny!</small></p>
             {% endif %}
         </div>
     </div>
 
 </div>
 
+<!-- ⚡ MODAL POP-UP DLA FLASH QUESTÓW -->
+<div class="modal fade" id="questModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-white border-warning shadow-lg">
+            <div class="modal-header border-bottom border-warning">
+                <h5 class="modal-title fw-bold text-warning" id="questModalTitle">⚡ WYZWANIE BŁYSKAWICZNE!</h5>
+                <span class="badge bg-danger fs-6 pulse-timer" id="questTimer">00:00</span>
+            </div>
+            <div class="modal-body text-center py-4">
+                <p class="fs-5 fw-bold mb-3" id="questText">Wczytywanie...</p>
+                <p class="text-success fs-4 fw-bold mb-0">Nagroda: +<span id="questReward">0</span> MC 🪙</p>
+                <small class="text-muted d-block mt-2" id="questModeHint"></small>
+            </div>
+            <div class="modal-footer border-top border-secondary justify-content-center">
+                <button type="button" class="btn btn-warning btn-lg fw-bold w-100 py-3 text-uppercase" id="claimQuestBtn" onclick="submitQuest()">
+                    ✨ WYKONANE! ODBIERZ MONETY
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+let activeQuestId = null;
+let timerInterval = null;
+
+function checkActiveQuest() {
+    fetch('/api/active-quest')
+        .then(res => res.json())
+        .then(data => {
+            if (data.active && !data.submitted) {
+                if (activeQuestId !== data.id) {
+                    activeQuestId = data.id;
+                    showQuestModal(data);
+                }
+            } else {
+                if (activeQuestId !== null) {
+                    let modalEl = document.getElementById('questModal');
+                    let modal = bootstrap.Modal.getInstance(modalEl);
+                    if (modal) modal.hide();
+                    activeQuestId = null;
+                    clearInterval(timerInterval);
+                }
+            }
+        });
+}
+
+function showQuestModal(quest) {
+    document.getElementById('questText').innerText = quest.title;
+    document.getElementById('questReward').innerText = quest.reward;
+    
+    if (quest.mode === 'manual') {
+        document.getElementById('questModeHint').innerText = '⚠️ To wyzwanie wymaga akceptacji przez Admina.';
+    } else {
+        document.getElementById('questModeHint').innerText = '⚡ Monety trafią na Twoje konto natychmiast!';
+    }
+
+    let btn = document.getElementById('claimQuestBtn');
+    btn.disabled = false;
+    btn.innerText = "✨ WYKONANE! ODBIERZ MONETY";
+
+    let remaining = quest.remaining_seconds;
+    updateTimerDisplay(remaining);
+
+    clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+        remaining--;
+        updateTimerDisplay(remaining);
+        if (remaining <= 0) {
+            clearInterval(timerInterval);
+            btn.disabled = true;
+            btn.innerText = "⏰ Czas minął!";
+        }
+    }, 1000);
+
+    let modal = new bootstrap.Modal(document.getElementById('questModal'));
+    modal.show();
+
+    if ("vibrate" in navigator) {
+        navigator.vibrate([200, 100, 200]);
+    }
+}
+
+function updateTimerDisplay(seconds) {
+    let secs = seconds > 0 ? seconds : 0;
+    let m = Math.floor(secs / 60).toString().padStart(2, '0');
+    let s = (secs % 60).toString().padStart(2, '0');
+    document.getElementById('questTimer').innerText = `${m}:${s}`;
+}
+
+function submitQuest() {
+    if (!activeQuestId) return;
+
+    let btn = document.getElementById('claimQuestBtn');
+    btn.disabled = true;
+    btn.innerText = "Wysyłanie...";
+
+    fetch(`/api/claim-quest/${activeQuestId}`, { method: 'POST' })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                if (data.mode === 'auto') {
+                    btn.innerText = "✅ Odebrano +" + data.reward + " MC!";
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1200);
+                } else {
+                    btn.innerText = "⏳ Zgłoszono! Czeka na akceptację Admina";
+                }
+            } else {
+                alert(data.message || 'Wystąpił błąd.');
+            }
+        });
+}
+
+setInterval(checkActiveQuest, 3000);
+checkActiveQuest();
+</script>
+
 </body>
 </html>
