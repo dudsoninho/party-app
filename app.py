@@ -1,9 +1,9 @@
+import os
 from flask import Flask
 from config import Config
 from models import db
 from routes.main import main_bp
 from routes.admin import admin_bp
-import os
 
 def create_app():
     app = Flask(__name__)

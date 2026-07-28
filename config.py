@@ -8,4 +8,4 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     # Lista nicków z automatycznym uprawnieniem Admina (wpisane dokładnie tak, jak w logowaniu)
-    ADMIN_USERS = ['@Ptychu99', 'M0tylisk0']
+    ADMIN_USERS = ['@Ptychu99', 'M0tylisk0', 'admin', 'magda']

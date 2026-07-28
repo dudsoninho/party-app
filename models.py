@@ -11,6 +11,7 @@ class User(db.Model):
     balance = db.Column(db.Integer, default=100)
     is_admin = db.Column(db.Integer, default=0)
     last_active = db.Column(db.DateTime, default=datetime.utcnow)
+    last_spin = db.Column(db.DateTime, nullable=True) # Potrzebne do Cooldownu Koła Fortuny
 
 class ShopItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -49,3 +50,23 @@ class QuestSubmission(db.Model):
 
     quest = db.relationship('Quest', backref='submissions')
     user = db.relationship('User', backref='quest_submissions')
+
+# Nowa tabela: Zakłady i Pojedynki P2P
+class Bet(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    creator_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    opponent_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True) # None jeśli zakład dla wszystkich
+    title = db.Column(db.String(200), nullable=False)
+    amount = db.Column(db.Integer, nullable=False)
+    bet_type = db.Column(db.String(20), default='duel') # 'duel' (P2P) lub 'party' (dla wszystkich)
+    status = db.Column(db.String(20), default='open') # 'open', 'accepted', 'resolved', 'canceled'
+    winner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    creator = db.relationship('User', foreign_keys=[creator_id], backref='created_bets')
+    opponent = db.relationship('User', foreign_keys=[opponent_id], backref='challenged_bets')
+
+def init_db(app):
+    db.init_app(app)
+    with app.app_context():
+        db.create_all()
