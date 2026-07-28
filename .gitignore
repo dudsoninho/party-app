@@ -1,4 +1,18 @@
-.DS_Store
-database.db
+# Notatki i pliki osobiste
+*.rtf
+*.log
+tunnel.log
+
+# Bazy danych SQLite
+*.db
+*.sqlite3
+instance/
+
+# Cache Pythona i systemowe
 __pycache__/
+*.py[cod]
+.DS_Store
+
+# Środowiska wirtualne (jeśli używasz)
+venv/
 .venv/

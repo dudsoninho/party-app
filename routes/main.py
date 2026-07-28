@@ -1,11 +1,20 @@
 import random
 import io
 import base64
+from datetime import datetime
 import qrcode
-from flask import Blueprint, render_template, request, redirect, url_for, session, flash
+from flask import Blueprint, render_template, request, redirect, url_for, session, flash, current_app
 from models import db, User, ShopItem, Transaction
 
 main_bp = Blueprint('main', __name__)
+
+@main_bp.before_app_request
+def update_last_active():
+    if 'user_id' in session:
+        user = User.query.get(session['user_id'])
+        if user:
+            user.last_active = datetime.utcnow()
+            db.session.commit()
 
 def generate_unique_code():
     while True:
@@ -52,19 +61,24 @@ def login():
         if user:
             if user.pin == pin:
                 session['user_id'] = user.id
+                user.last_active = datetime.utcnow()
+                db.session.commit()
                 return redirect(url_for('main.index'))
             else:
                 flash('Niepoprawny PIN dla tego nicku!', 'danger')
                 return redirect(url_for('main.login'))
         else:
-            is_admin_flag = 1 if username.lower() in ['admin', 'magda'] else 0
+            admin_list = current_app.config.get('ADMIN_USERS', ['@Ptychu99', 'M0tylisk0'])
+            is_admin_flag = 1 if username.lower() in [name.lower() for name in admin_list] else 0
+            
             new_code = generate_unique_code()
             new_user = User(
                 username=username,
                 pin=pin,
                 user_code=new_code,
                 balance=100,
-                is_admin=is_admin_flag
+                is_admin=is_admin_flag,
+                last_active=datetime.utcnow()
             )
             db.session.add(new_user)
             db.session.commit()

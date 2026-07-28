@@ -1,65 +1,108 @@
-{% extends "base.html" %}
-
-{% block content %}
-<div class="card">
-    <h2>Panel Administratora ⚙️</h2>
-    
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div style="padding: 10px; border-radius: 8px; margin: 10px 0; background: rgba(0,255,136,0.2); color: #00ff88; font-size: 14px;">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-
-    <div style="margin: 20px 0; background: #232333; padding: 15px; border-radius: 8px;">
-        <h3>Dodaj przedmiot do Sklepu</h3>
-        <form action="{{ url_for('admin.add_item') }}" method="POST" style="margin-top: 10px;">
-            <input type="text" name="name" placeholder="Nazwa przedmiotu" required style="margin-bottom: 8px;">
-            <input type="number" name="price" placeholder="Cena (MC)" required style="margin-bottom: 8px;">
-            <input type="text" name="icon" placeholder="Emoji (np. 🍹, 🍕)" required style="margin-bottom: 8px;">
-            <input type="text" name="description" placeholder="Krótki opis" style="margin-bottom: 12px;">
-            <button type="submit" class="btn btn-send">Dodaj do sklepu</button>
-        </form>
-    </div>
-
-    <div style="margin: 20px 0; background: #232333; padding: 15px; border-radius: 8px;">
-        <h3>Zarządzanie Użytkownikami</h3>
-        <table style="width: 100%; border-collapse: collapse; margin-top: 10px; color: #fff; font-size: 0.9rem;">
-            <thead>
-                <tr style="border-bottom: 1px solid #444; text-align: left;">
-                    <th style="padding: 8px;">ID</th>
-                    <th style="padding: 8px;">Nick</th>
-                    <th style="padding: 8px;">Saldo</th>
-                    <th style="padding: 8px;">Akcje</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for u in users %}
-                <tr style="border-bottom: 1px solid #333;">
-                    <td style="padding: 8px;">{{ u.user_code }}</td>
-                    <td style="padding: 8px;">{{ u.username }} {% if u.is_admin %}(Admin){% endif %}</td>
-                    <td style="padding: 8px;">
-                        <form action="{{ url_for('admin.set_balance', user_id=u.id) }}" method="POST" style="display: flex; gap: 5px;">
-                            <input type="number" name="balance" value="{{ u.balance }}" style="width: 60px; padding: 2px 5px;">
-                            <button type="submit" style="background: #7928ca; border: None; color: #fff; padding: 2px 8px; border-radius: 4px; cursor: pointer;">Zapisz</button>
-                        </form>
-                    </td>
-                    <td style="padding: 8px;">
-                        {% if not u.is_admin %}
-                        <form action="{{ url_for('admin.delete_user', user_id=u.id) }}" method="POST" onsubmit="return confirm('Czy na pewno usunąć?');">
-                            <button type="submit" style="background: #ff2e4c; border: None; color: #fff; padding: 4px 8px; border-radius: 4px; cursor: pointer;">Usuń</button>
-                        </form>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-
-    <a href="{{ url_for('main.index') }}" class="btn" style="background: #33334d; text-decoration: none; text-align: center; display: block; margin-top: 20px;">← Powrót do Gry</a>
-</div>
-{% endblock %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2487.6">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000; min-height: 14.0px}
+    span.s1 {font-kerning: none}
+    span.s2 {font: 12.0px 'Apple Color Emoji'; font-kerning: none}
+    span.s3 {font: 12.0px Symbol; font-kerning: none}
+  </style>
+</head>
+<body>
+<p class="p1"><span class="s1">{% extends "base.html" %}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">{% block content %}</span></p>
+<p class="p1"><span class="s1">&lt;div class="card"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;h2&gt;Panel Administratora </span><span class="s2">⚙️</span><span class="s1">&lt;/h2&gt;</span></p>
+<p class="p2"><span class="s1"><span class="Apple-converted-space">    </span></span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>{% with messages = get_flashed_messages(with_categories=true) %}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>{% if messages %}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>{% for category, message in messages %}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;div style="padding: 10px; border-radius: 8px; margin: 10px 0; background: rgba(0,255,136,0.2); color: #00ff88; font-size: 14px;"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>{{ message }}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>{% endfor %}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>{% endif %}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>{% endwith %}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;!-- Sekcja Aktywnych Użytkowników Online --&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div style="margin: 20px 0; background: #1f2d24; border: 1px solid #00ff88; padding: 15px; border-radius: 8px;"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;h3 style="color: #00ff88; margin-bottom: 8px;"&gt;Zalogowani Użytkownicy Online </span><span class="s2">🟢</span><span class="s1"> ({{ online_users|length }})&lt;/h3&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>{% if online_users %}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;ul style="list-style: none; padding: 0; margin: 0; display: flex; gap: 10px; flex-wrap: wrap;"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>{% for u in online_users %}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;li style="background: rgba(0, 255, 136, 0.15); padding: 5px 12px; border-radius: 15px; font-size: 0.85rem;"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;strong&gt;{{ u.username }}&lt;/strong&gt; (ID: {{ u.user_code }})</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/li&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>{% endfor %}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/ul&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>{% else %}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;p style="color: #a0a0b0; font-size: 0.85rem; margin: 0;"&gt;Brak aktywnych użytkowników w tej chwili.&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>{% endif %}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div style="margin: 20px 0; background: #232333; padding: 15px; border-radius: 8px;"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;h3&gt;Dodaj przedmiot do Sklepu&lt;/h3&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;form action="{{ url_for('admin.add_item') }}" method="POST" style="margin-top: 10px;"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;input type="text" name="name" placeholder="Nazwa przedmiotu" required style="margin-bottom: 8px;"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;input type="number" name="price" placeholder="Cena (MC)" required style="margin-bottom: 8px;"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;input type="text" name="icon" placeholder="Emoji (np. </span><span class="s2">🍹</span><span class="s1">, </span><span class="s2">🍕</span><span class="s1">)" required style="margin-bottom: 8px;"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;input type="text" name="description" placeholder="Krótki opis" style="margin-bottom: 12px;"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;button type="submit" class="btn btn-send"&gt;Dodaj do sklepu&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/form&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div style="margin: 20px 0; background: #232333; padding: 15px; border-radius: 8px;"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;h3&gt;Zarządzanie Użytkownikami&lt;/h3&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;table style="width: 100%; border-collapse: collapse; margin-top: 10px; color: #fff; font-size: 0.9rem;"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;thead&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;tr style="border-bottom: 1px solid #444; text-align: left;"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;th style="padding: 8px;"&gt;Status&lt;/th&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;th style="padding: 8px;"&gt;ID&lt;/th&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;th style="padding: 8px;"&gt;Nick&lt;/th&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;th style="padding: 8px;"&gt;Saldo&lt;/th&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;th style="padding: 8px;"&gt;Akcje&lt;/th&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;/tr&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/thead&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;tbody&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>{% for u in users %}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;tr style="border-bottom: 1px solid #333;"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;td style="padding: 8px;"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>{% if u in online_users %}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span></span><span class="s2">🟢</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>{% else %}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span></span><span class="s2">⚪</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>{% endif %}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/td&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;td style="padding: 8px;"&gt;{{ u.user_code }}&lt;/td&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;td style="padding: 8px;"&gt;{{ u.username }} {% if u.is_admin %}(Admin){% endif %}&lt;/td&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;td style="padding: 8px;"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;form action="{{ url_for('admin.set_balance', user_id=u.id) }}" method="POST" style="display: flex; gap: 5px;"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;input type="number" name="balance" value="{{ u.balance }}" style="width: 60px; padding: 2px 5px;"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;button type="submit" style="background: #7928ca; border: None; color: #fff; padding: 2px 8px; border-radius: 4px; cursor: pointer;"&gt;Zapisz&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;/form&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/td&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;td style="padding: 8px;"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>{% if not u.is_admin %}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;form action="{{ url_for('admin.delete_user', user_id=u.id) }}" method="POST" onsubmit="return confirm('Czy na pewno usunąć?');"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;button type="submit" style="background: #ff2e4c; border: None; color: #fff; padding: 4px 8px; border-radius: 4px; cursor: pointer;"&gt;Usuń&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;/form&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>{% endif %}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/td&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;/tr&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>{% endfor %}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/tbody&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/table&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;a href="{{ url_for('main.index') }}" class="btn" style="background: #33334d; text-decoration: none; text-align: center; display: block; margin-top: 20px;"&gt;</span><span class="s3">←</span><span class="s1"> Powrót do Gry&lt;/a&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1">{% endblock %}</span></p>
+</body>
+</html>
