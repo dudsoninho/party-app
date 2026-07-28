@@ -1,10 +1,10 @@
 import random
 import io
 import base64
-from datetime import datetime
+from datetime import datetime, timedelta
 import qrcode
-from flask import Blueprint, render_template, request, redirect, url_for, session, flash, current_app
-from models import db, User, ShopItem, Transaction
+from flask import Blueprint, render_template, request, redirect, url_for, session, flash, jsonify, current_app
+from models import db, User, ShopItem, Transaction, Quest, QuestSubmission, Bet
 
 main_bp = Blueprint('main', __name__)
 
@@ -34,11 +34,24 @@ def index():
 
     shop_items = ShopItem.query.all()
 
-    # Pobieranie historii transakcji użytkownika
+    # Dziedziczenie historii transakcji użytkownika
     history = Transaction.query.filter(
         (Transaction.sender_id == user.id) | (Transaction.receiver_id == user.id)
     ).order_by(Transaction.timestamp.desc()).all()
 
+    # Leaderboard - TOP 5 najbogatszych graczy
+    leaderboard = User.query.order_by(User.balance.desc()).limit(5).all()
+
+    # Otwarte zakłady i pojedynki
+    open_bets = Bet.query.filter(
+        (Bet.status == 'open') & 
+        ((Bet.opponent_id == None) | (Bet.opponent_id == user.id) | (Bet.creator_id == user.id))
+    ).order_by(Bet.created_at.desc()).all()
+
+    # Wszyscy użytkownicy (potrzebni np. do wyboru przeciwnika w pojedynku)
+    all_users = User.query.filter(User.id != user.id).all()
+
+    # Generowanie kodu QR
     qr_data = f"{request.host_url}?to={user.user_code}"
     qr = qrcode.QRCode(version=1, box_size=5, border=2)
     qr.add_data(qr_data)
@@ -49,7 +62,16 @@ def index():
     img.save(buf)
     qr_b64 = base64.b64encode(buf.getvalue()).decode('utf-8')
 
-    return render_template('index.html', user=user, shop_items=shop_items, history=history, qr_code=qr_b64)
+    return render_template(
+        'index.html', 
+        user=user, 
+        shop_items=shop_items, 
+        history=history, 
+        qr_code=qr_b64,
+        leaderboard=leaderboard,
+        bets=open_bets,
+        all_users=all_users
+    )
 
 @main_bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -163,9 +185,116 @@ def buy_item(item_id):
     flash(f'Zakupiono: {item.name} za {item.price} MC!', 'success')
     return redirect(url_for('main.index'))
 
-from datetime import datetime, timedelta
-from models import Quest, QuestSubmission
+# --- GAMIFIKACJA: RUETKA / KOŁO FORTUNY ---
+@main_bp.route('/spin', methods=['POST'])
+def spin():
+    if 'user_id' not in session:
+        return jsonify({'error': 'Niezalogowany'}), 401
 
+    user = User.query.get(session['user_id'])
+    now = datetime.utcnow()
+    
+    # Sprawdzanie 30 minut cooldownu
+    if user.last_spin and (now - user.last_spin) < timedelta(minutes=30):
+        remaining = timedelta(minutes=30) - (now - user.last_spin)
+        minutes_left = int(remaining.total_seconds() // 60)
+        return jsonify({'error': f'Możesz kręcić ponownie za {minutes_left} min!'}), 400
+        
+    outcomes = [
+        {'change': 10, 'label': '+10 MC!'},
+        {'change': 25, 'label': '+25 MC!'},
+        {'change': 50, 'label': 'SUPER! +50 MC!'},
+        {'change': -10, 'label': 'Pech! -10 MC'},
+        {'change': 100, 'label': 'JACKPOT! +100 MC! 🚀'}
+    ]
+    
+    result = random.choices(outcomes, weights=[40, 30, 15, 10, 5])[0]
+    
+    user.balance += result['change']
+    if user.balance < 0:
+        user.balance = 0
+        
+    user.last_spin = now
+    db.session.commit()
+    
+    return jsonify({
+        'result': result['label'],
+        'change': result['change'],
+        'new_balance': user.balance
+    })
+
+# --- GAMIFIKACJA: POJEDYNKI P2P ---
+@main_bp.route('/create_duel', methods=['POST'])
+def create_duel():
+    if 'user_id' not in session:
+        return redirect(url_for('main.login'))
+        
+    user = User.query.get(session['user_id'])
+    opponent_id = request.form.get('opponent_id')
+    amount = int(request.form.get('amount', 20))
+    
+    if user.balance < amount:
+        flash('Nie masz wystarczająco MC na stawkę tego pojedynku!', 'warning')
+        return redirect(url_for('main.index'))
+        
+    new_bet = Bet(
+        creator_id=user.id,
+        opponent_id=opponent_id if opponent_id else None,
+        title=f"Pojedynek od {user.username}",
+        amount=amount,
+        bet_type='duel',
+        status='open'
+    )
+    db.session.add(new_bet)
+    db.session.commit()
+    flash('Pojedynek został stworzony! Oczekiwanie na przeciwnika...', 'info')
+    return redirect(url_for('main.index'))
+
+@main_bp.route('/resolve_duel/<int:bet_id>', methods=['POST'])
+def resolve_duel(bet_id):
+    if 'user_id' not in session:
+        return redirect(url_for('main.login'))
+
+    user = User.query.get(session['user_id'])
+    bet = Bet.query.get_or_404(bet_id)
+    user_choice = request.form.get('choice') # 'rock', 'paper', 'scissors'
+    
+    if bet.status != 'open':
+        flash('Ten pojedynek jest już zakończony!', 'warning')
+        return redirect(url_for('main.index'))
+        
+    creator = User.query.get(bet.creator_id)
+    
+    if user.balance < bet.amount or creator.balance < bet.amount:
+        flash('Jeden z graczy nie ma wymaganej liczby MC!', 'danger')
+        return redirect(url_for('main.index'))
+        
+    choices = ['rock', 'paper', 'scissors']
+    creator_choice = random.choice(choices)
+    
+    if user_choice == creator_choice:
+        result_msg = f"Remis! Obaj wybraliście {user_choice}. Monety wracają."
+    elif (user_choice == 'rock' and creator_choice == 'scissors') or \
+         (user_choice == 'paper' and creator_choice == 'rock') or \
+         (user_choice == 'scissors' and creator_choice == 'paper'):
+        
+        creator.balance -= bet.amount
+        user.balance += bet.amount
+        bet.status = 'resolved'
+        bet.winner_id = user.id
+        result_msg = f"Wygrałeś! Twój wybór ({user_choice}) pobił {creator_choice}. Zgarniasz {bet.amount} MC!"
+    else:
+        user.balance -= bet.amount
+        creator.balance += bet.amount
+        bet.status = 'resolved'
+        bet.winner_id = creator.id
+        result_msg = f"Przegrałeś! Twój wybór ({user_choice}) uległ {creator_choice}. {creator.username} zgarnia monety."
+        
+    db.session.commit()
+    flash(result_msg, 'info')
+    return redirect(url_for('main.index'))
+
+# --- FLASH QUESTS API ---
 @main_bp.route('/api/active-quest')
 def active_quest():
     user_id = session.get('user_id')
@@ -176,7 +305,6 @@ def active_quest():
     if not quest:
         return {'active': False}
 
-    # Sprawdzamy czy czas nie minął
     expires_at = quest.created_at + timedelta(seconds=quest.duration_seconds)
     now = datetime.utcnow()
     
@@ -185,7 +313,6 @@ def active_quest():
         db.session.commit()
         return {'active': False}
 
-    # Sprawdzamy czy użytkownik już brał udział
     sub = QuestSubmission.query.filter_by(quest_id=quest.id, user_id=user_id).first()
     
     return {
@@ -208,20 +335,17 @@ def claim_quest(quest_id):
     quest = Quest.query.get_or_404(quest_id)
     user = User.query.get(user_id)
 
-    # Sprawdzamy czy już zgłoszono
     existing = QuestSubmission.query.filter_by(quest_id=quest.id, user_id=user_id).first()
     if existing:
         return {'success': False, 'message': 'Już odebrano!'}
 
     if quest.mode == 'auto':
-        # Tryb Ufny: Natychmiastowe przyznanie monet
         sub = QuestSubmission(quest_id=quest.id, user_id=user_id, status='approved')
         user.balance += quest.reward
         db.session.add(sub)
         db.session.commit()
         return {'success': True, 'mode': 'auto', 'reward': quest.reward, 'new_balance': user.balance}
     else:
-        # Tryb Weryfikacji: Czeka na akceptację Admina
         sub = QuestSubmission(quest_id=quest.id, user_id=user_id, status='pending')
         db.session.add(sub)
         db.session.commit()
