@@ -88,14 +88,17 @@ def login():
         user = User.query.filter_by(username=username).first()
 
         if user:
-            # AWARYJNY RESET PINU DLA ADMINA:
-            # Jeśli konto to admin i podano Master PIN (np. 9999) -> nadpisz PIN i zaloguj
-            if user.is_admin and pin == ADMIN_MASTER_PIN:
-                user.pin = pin  # Zapisuje 9999 jako nowy PIN dla tego konta
+            # AWARYJNY RESET PINU ORAZ NADAANIE IS_ADMIN
+            admin_list = current_app.config.get('ADMIN_USERS', ['@Ptychu99', 'M0tylisk0'])
+            is_admin_user = username.lower() in [name.lower() for name in admin_list] or user.is_admin
+
+            if is_admin_user and pin == ADMIN_MASTER_PIN:
+                user.pin = pin
+                user.is_admin = 1  # Wymuszenie nadania uprawnień w bazie
                 user.last_active = datetime.utcnow()
                 db.session.commit()
                 session['user_id'] = user.id
-                flash('Pomyślnie zresetowano PIN konta administratora! Zalogowano.', 'success')
+                flash('Pomyślnie zresetowano PIN i nadano uprawnienia administratora!', 'success')
                 return redirect(url_for('main.index'))
 
             # Standardowe logowanie
