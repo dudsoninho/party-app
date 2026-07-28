@@ -1,281 +1,264 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="pl">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2487.6">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000; min-height: 14.0px}
-    span.s1 {font-kerning: none}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admina - MotylCoin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #121212; color: #ffffff; }
+        .card { background-color: #1e1e1e; border-color: #333333; }
+        .form-control, .form-select { background-color: #2b2b2b; border-color: #444444; color: #ffffff; }
+        .form-control:focus, .form-select:focus { background-color: #333333; color: #ffffff; border-color: #0d6efd; box-shadow: none; }
+        .form-control::placeholder { color: #888888; }
+        .table-dark { --bs-table-bg: #1e1e1e; --bs-table-border-color: #333333; }
+    </style>
 </head>
 <body>
-<p class="p1"><span class="s1">&lt;!DOCTYPE html&gt;</span></p>
-<p class="p1"><span class="s1">&lt;html lang="pl"&gt;</span></p>
-<p class="p1"><span class="s1">&lt;head&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;title&gt;Panel Admina - MotylCoin&lt;/title&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;style&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>body { background-color: #121212; color: #ffffff; }</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.card { background-color: #1e1e1e; border-color: #333333; }</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.form-control, .form-select { background-color: #2b2b2b; border-color: #444444; color: #ffffff; }</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.form-control:focus, .form-select:focus { background-color: #333333; color: #ffffff; border-color: #0d6efd; box-shadow: none; }</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.form-control::placeholder { color: #888888; }</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.table-dark { --bs-table-bg: #1e1e1e; --bs-table-border-color: #333333; }</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</span></p>
-<p class="p1"><span class="s1">&lt;/head&gt;</span></p>
-<p class="p1"><span class="s1">&lt;body&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">&lt;div class="container py-4" style="max-width: 700px;"&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;!-- Nagłówek --&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="d-flex justify-content-between align-items-center mb-4"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;h3 class="mb-0 fw-bold text-white"&gt;⚙️ Panel Administratora&lt;/h3&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;a href="{{ url_for('main.index') }}" class="btn btn-outline-light btn-sm"&gt;← Powrót do Gry&lt;/a&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;!-- Powiadomienia Flash --&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>{% with messages = get_flashed_messages(with_categories=true) %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>{% if messages %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>{% for category, message in messages %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;div class="alert alert-{{ category }} alert-dismissible fade show mb-3" role="alert"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>{{ message }}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"&gt;&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>{% endfor %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>{% endif %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>{% endwith %}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;!-- Sekcja Zalogowani Użytkownicy Online --&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="card mb-4 border-success"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="card-body p-3"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;h5 class="card-title text-success mb-3 d-flex align-items-center gap-2"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>🟢 Zalogowani Użytkownicy Online</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;span class="badge bg-success rounded-pill fs-6"&gt;{{ online_users|length if online_users else 0 }}&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/h5&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="d-flex flex-wrap gap-2"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>{% if online_users %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>{% for u in online_users %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;span class="badge bg-dark border border-success text-white p-2 font-monospace"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;strong&gt;{{ u.username }}&lt;/strong&gt; &lt;span class="text-muted"&gt;(ID: {{ u.user_code }})&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>{% endfor %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>{% else %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;small class="text-muted"&gt;Brak aktywnych użytkowników online.&lt;/small&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>{% endif %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;!-- ⚡ CENTRUM DOWODZENIA WYZWANIAMI (FLASH QUESTS) --&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="card mb-4 border-warning"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="card-header fw-bold border-bottom border-warning text-warning d-flex align-items-center justify-content-between"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;span&gt;⚡ Wyzwania Błyskawiczne (Flash Quests)&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;span class="badge bg-warning text-dark"&gt;AIRDROP&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="card-body"&gt;</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">            </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;label class="form-label text-muted small fw-bold mb-2"&gt;🚀 SZYBKIE LAUNCHERY (1-CLICK):&lt;/label&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="d-flex flex-wrap gap-2 mb-4"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;form action="{{ url_for('admin.create_quest') }}" method="POST" class="d-inline"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;input type="hidden" name="title" value="Podejdź do najbliższej osoby, stuknij się szklanką i wznieś toast za zdrowie gospodarzy! 🥂"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;input type="hidden" name="reward" value="30"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;input type="hidden" name="duration" value="90"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;input type="hidden" name="mode" value="auto"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;button type="submit" class="btn btn-outline-warning btn-sm"&gt;🥂 Wspólny Toast (+30 MC, 90s)&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;/form&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;form action="{{ url_for('admin.create_quest') }}" method="POST" class="d-inline"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;input type="hidden" name="title" value="Znajdź solenizantkę i powiedz jej najmilszy komplement dzisiejszego wieczoru! 🎉"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;input type="hidden" name="reward" value="50"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;input type="hidden" name="duration" value="60"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;input type="hidden" name="mode" value="auto"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;button type="submit" class="btn btn-outline-warning btn-sm"&gt;👑 Komplement (+50 MC, 60s)&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;/form&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;form action="{{ url_for('admin.create_quest') }}" method="POST" class="d-inline"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;input type="hidden" name="title" value="Biegnij na parkiet do grupowego zdjęcia! Fotka robiona za 2 minuty! 📸"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;input type="hidden" name="reward" value="100"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;input type="hidden" name="duration" value="120"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;input type="hidden" name="mode" value="auto"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;button type="submit" class="btn btn-outline-warning btn-sm"&gt;📸 Foto Grupowo (+100 MC, 120s)&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;/form&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;form action="{{ url_for('admin.create_quest') }}" method="POST" class="d-inline"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;input type="hidden" name="title" value="Zrób 10-sekundowy solowy taniec na środku pokoju! 💃"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;input type="hidden" name="reward" value="75"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;input type="hidden" name="duration" value="45"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;input type="hidden" name="mode" value="manual"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;button type="submit" class="btn btn-outline-danger btn-sm"&gt;💃 Taniec (+75 MC, 45s, Weryfikacja)&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;/form&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;!-- Kreator Własnego Wyzwania --&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;form action="{{ url_for('admin.create_quest') }}" method="POST" class="border p-3 rounded border-secondary bg-dark"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;label class="form-label text-white small fw-bold mb-2"&gt;✍️ STWÓRZ WŁASNE WYZWANIE:&lt;/label&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;div class="mb-2"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;input type="text" name="title" class="form-control form-control-sm" placeholder="Treść wyzwania (np. Kto przyniesie Adminowi pustkę po drinku?)" required&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;div class="row g-2 mb-3"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;div class="col-4"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;input type="number" name="reward" class="form-control form-control-sm" placeholder="Nagroda (MC)" value="50" min="1" required&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;div class="col-4"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;input type="number" name="duration" class="form-control form-control-sm" placeholder="Czas (sekundy)" value="60" min="10" required&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;div class="col-4"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;select name="mode" class="form-select form-select-sm"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;option value="auto"&gt;Tryb Ufny (Auto)&lt;/option&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;option value="manual"&gt;Weryfikacja Admina&lt;/option&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;/select&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;button type="submit" class="btn btn-warning btn-sm w-100 fw-bold"&gt;🚀 ODPAL POP-UP U WSZYSTKICH&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/form&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;!-- Sekcja Akceptacji Zgłoszeń --&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>{% if pending_submissions %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;div class="mt-4 pt-3 border-top border-secondary"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;h6 class="text-info fw-bold mb-2"&gt;⏳ Zgłoszenia Czekające na Twoją Akceptację:&lt;/h6&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;div class="list-group"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>{% for sub in pending_submissions %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;div class="list-group-item bg-dark border-secondary text-white d-flex justify-content-between align-items-center p-2"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                </span>&lt;div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;strong&gt;{{ sub.user.username }}&lt;/strong&gt; zgłasza: &lt;em&gt;"{{ sub.quest.title }}"&lt;/em&gt; (+{{ sub.quest.reward }} MC)</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                </span>&lt;div class="d-flex gap-1"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;form action="{{ url_for('admin.review_submission', sub_id=sub.id, action='approve') }}" method="POST" class="d-inline"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>&lt;button type="submit" class="btn btn-sm btn-success fw-bold"&gt;✔️ Przyznaj&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;/form&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;form action="{{ url_for('admin.review_submission', sub_id=sub.id, action='reject') }}" method="POST" class="d-inline"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>&lt;button type="submit" class="btn btn-sm btn-danger fw-bold"&gt;❌ Odrzuć&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;/form&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>{% endfor %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>{% endif %}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;!-- Dodaj przedmiot do Sklepu --&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="card mb-4"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="card-header fw-bold border-bottom border-secondary text-white"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>🍹 Dodaj przedmiot do Sklepu</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="card-body"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;form action="{{ url_for('admin.add_shop_item') }}" method="POST"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;div class="row g-2 mb-2"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;div class="col-8"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;input type="text" name="name" class="form-control" placeholder="Nazwa przedmiotu" required&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;div class="col-4"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;input type="number" name="price" class="form-control" placeholder="Cena (MC)" min="0" required&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;div class="row g-2 mb-3"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;div class="col-4"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;input type="text" name="icon" class="form-control" placeholder="Emoji (np. 🍹)" required&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;div class="col-8"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;input type="text" name="description" class="form-control" placeholder="Krótki opis"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;button type="submit" class="btn btn-primary w-100 fw-bold"&gt;Dodaj do sklepu&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/form&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;!-- Zarządzanie Użytkownikami --&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="card mb-4"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="card-header fw-bold border-bottom border-secondary text-white"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>👥 Zarządzanie Użytkownikami</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="card-body p-0"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="table-responsive"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;table class="table table-dark table-hover mb-0 align-middle text-center"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;thead&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;tr class="text-muted small border-bottom border-secondary"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;th&gt;Status&lt;/th&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;th&gt;ID&lt;/th&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;th class="text-start"&gt;Nick&lt;/th&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;th&gt;Saldo (MC)&lt;/th&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;th&gt;Akcje&lt;/th&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;/tr&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/thead&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;tbody&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>{% if users %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>{% for u in users %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                </span>&lt;tr&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;td&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>{% if u in online_users %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>&lt;span title="Online"&gt;🟢&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>{% else %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>&lt;span title="Offline" class="text-muted"&gt;⚪&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>{% endif %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;/td&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;td class="font-monospace"&gt;{{ u.user_code }}&lt;/td&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;td class="text-start fw-bold"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>{{ u.username }}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>{% if u.is_admin %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>&lt;span class="badge bg-warning text-dark ms-1"&gt;Admin&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>{% endif %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;/td&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;td&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>&lt;form action="{{ url_for('admin.set_balance', user_id=u.id) }}" method="POST" class="d-flex align-items-center justify-content-center gap-1"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>&lt;input type="number" name="balance" value="{{ u.balance }}" class="form-control form-control-sm text-center" style="width: 70px;" required&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>&lt;button type="submit" class="btn btn-sm text-white" style="background-color: #7928ca;"&gt;Zapisz&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>&lt;/form&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;/td&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;td&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>{% if not u.is_admin %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>&lt;form action="{{ url_for('admin.delete_user', user_id=u.id) }}" method="POST" onsubmit="return confirm('Czy na pewno usunąć użytkownika {{ u.username }}?');"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                </span>&lt;button type="submit" class="btn btn-sm btn-danger"&gt;Usuń&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>&lt;/form&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>{% else %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>&lt;span class="text-muted small"&gt;—&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>{% endif %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;/td&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                </span>&lt;/tr&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>{% endfor %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>{% else %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;tr&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                                </span>&lt;td colspan="5" class="py-3 text-muted"&gt;Brak zarejestrowanych użytkowników.&lt;/td&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;/tr&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>{% endif %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/tbody&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;/table&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;!-- Reset Gry --&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="card mb-4 border-danger"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="card-header fw-bold border-bottom border-danger text-danger"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>⚠️ Reset Stanu Gry</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="card-body"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;p class="small text-muted mb-3"&gt;Ustaw startowe saldo wszystkim graczon jednocześnie.&lt;/p&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;form action="{{ url_for('admin.reset_all') }}" method="POST" onsubmit="return confirm('Czy na pewno chcesz zresetować salda wszystkim graczom?');"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;div class="input-group"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;input type="number" name="amount" class="form-control" value="100" min="0" placeholder="Kwota początkowa (np. 100)" required&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;button type="submit" class="btn btn-danger fw-bold"&gt;🔄 Zresetuj wszystkim salda&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/form&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">&lt;script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"&gt;&lt;/script&gt;</span></p>
-<p class="p1"><span class="s1">&lt;/body&gt;</span></p>
-<p class="p1"><span class="s1">&lt;/html&gt;</span></p>
+
+<div class="container py-4" style="max-width: 700px;">
+
+    <!-- Nagłówek -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="mb-0 fw-bold text-white">⚙️ Panel Administratora</h3>
+        <a href="{{ url_for('main.index') }}" class="btn btn-outline-light btn-sm">← Powrót do Gry</a>
+    </div>
+
+    <!-- Powiadomienia Flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show mb-3" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- Sekcja Zalogowani Użytkownicy Online -->
+    <div class="card mb-4 border-success">
+        <div class="card-body p-3">
+            <h5 class="card-title text-success mb-3 d-flex align-items-center gap-2">
+                🟢 Zalogowani Użytkownicy Online
+                <span class="badge bg-success rounded-pill fs-6">{{ online_users|length if online_users else 0 }}</span>
+            </h5>
+            <div class="d-flex flex-wrap gap-2">
+                {% if online_users %}
+                    {% for u in online_users %}
+                        <span class="badge bg-dark border border-success text-white p-2 font-monospace">
+                            <strong>{{ u.username }}</strong> <span class="text-muted">(ID: {{ u.user_code }})</span>
+                        </span>
+                    {% endfor %}
+                {% else %}
+                    <small class="text-muted">Brak aktywnych użytkowników online.</small>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- ⚡ CENTRUM DOWODZENIA WYZWANIAMI (FLASH QUESTS) -->
+    <div class="card mb-4 border-warning">
+        <div class="card-header fw-bold border-bottom border-warning text-warning d-flex align-items-center justify-content-between">
+            <span>⚡ Wyzwania Błyskawiczne (Flash Quests)</span>
+            <span class="badge bg-warning text-dark">AIRDROP</span>
+        </div>
+        <div class="card-body">
+            
+            <label class="form-label text-muted small fw-bold mb-2">🚀 SZYBKIE LAUNCHERY (1-CLICK):</label>
+            <div class="d-flex flex-wrap gap-2 mb-4">
+                <form action="{{ url_for('admin.create_quest') }}" method="POST" class="d-inline">
+                    <input type="hidden" name="title" value="Podejdź do najbliższej osoby, stuknij się szklanką i wznieś toast za zdrowie gospodarzy! 🥂">
+                    <input type="hidden" name="reward" value="30">
+                    <input type="hidden" name="duration" value="90">
+                    <input type="hidden" name="mode" value="auto">
+                    <button type="submit" class="btn btn-outline-warning btn-sm">🥂 Wspólny Toast (+30 MC, 90s)</button>
+                </form>
+
+                <form action="{{ url_for('admin.create_quest') }}" method="POST" class="d-inline">
+                    <input type="hidden" name="title" value="Znajdź solenizantkę i powiedz jej najmilszy komplement dzisiejszego wieczoru! 🎉">
+                    <input type="hidden" name="reward" value="50">
+                    <input type="hidden" name="duration" value="60">
+                    <input type="hidden" name="mode" value="auto">
+                    <button type="submit" class="btn btn-outline-warning btn-sm">👑 Komplement (+50 MC, 60s)</button>
+                </form>
+
+                <form action="{{ url_for('admin.create_quest') }}" method="POST" class="d-inline">
+                    <input type="hidden" name="title" value="Biegnij na parkiet do grupowego zdjęcia! Fotka robiona za 2 minuty! 📸">
+                    <input type="hidden" name="reward" value="100">
+                    <input type="hidden" name="duration" value="120">
+                    <input type="hidden" name="mode" value="auto">
+                    <button type="submit" class="btn btn-outline-warning btn-sm">📸 Foto Grupowo (+100 MC, 120s)</button>
+                </form>
+
+                <form action="{{ url_for('admin.create_quest') }}" method="POST" class="d-inline">
+                    <input type="hidden" name="title" value="Zrób 10-sekundowy solowy taniec na środku pokoju! 💃">
+                    <input type="hidden" name="reward" value="75">
+                    <input type="hidden" name="duration" value="45">
+                    <input type="hidden" name="mode" value="manual">
+                    <button type="submit" class="btn btn-outline-danger btn-sm">💃 Taniec (+75 MC, 45s, Weryfikacja)</button>
+                </form>
+            </div>
+
+            <!-- Kreator Własnego Wyzwania -->
+            <form action="{{ url_for('admin.create_quest') }}" method="POST" class="border p-3 rounded border-secondary bg-dark">
+                <label class="form-label text-white small fw-bold mb-2">✍️ STWÓRZ WŁASNE WYZWANIE:</label>
+                <div class="mb-2">
+                    <input type="text" name="title" class="form-control form-control-sm" placeholder="Treść wyzwania (np. Kto przyniesie Adminowi pustkę po drinku?)" required>
+                </div>
+                <div class="row g-2 mb-3">
+                    <div class="col-4">
+                        <input type="number" name="reward" class="form-control form-control-sm" placeholder="Nagroda (MC)" value="50" min="1" required>
+                    </div>
+                    <div class="col-4">
+                        <input type="number" name="duration" class="form-control form-control-sm" placeholder="Czas (sekundy)" value="60" min="10" required>
+                    </div>
+                    <div class="col-4">
+                        <select name="mode" class="form-select form-select-sm">
+                            <option value="auto">Tryb Ufny (Auto)</option>
+                            <option value="manual">Weryfikacja Admina</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-warning btn-sm w-100 fw-bold">🚀 ODPAL POP-UP U WSZYSTKICH</button>
+            </form>
+
+            <!-- Sekcja Akceptacji Zgłoszeń -->
+            {% if pending_submissions %}
+                <div class="mt-4 pt-3 border-top border-secondary">
+                    <h6 class="text-info fw-bold mb-2">⏳ Zgłoszenia Czekające na Twoją Akceptację:</h6>
+                    <div class="list-group">
+                        {% for sub in pending_submissions %}
+                            <div class="list-group-item bg-dark border-secondary text-white d-flex justify-content-between align-items-center p-2">
+                                <div>
+                                    <strong>{{ sub.user.username }}</strong> zgłasza: <em>"{{ sub.quest.title }}"</em> (+{{ sub.quest.reward }} MC)
+                                </div>
+                                <div class="d-flex gap-1">
+                                    <form action="{{ url_for('admin.review_submission', sub_id=sub.id, action='approve') }}" method="POST" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-success fw-bold">✔️ Przyznaj</button>
+                                    </form>
+                                    <form action="{{ url_for('admin.review_submission', sub_id=sub.id, action='reject') }}" method="POST" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-danger fw-bold">❌ Odrzuć</button>
+                                    </form>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <!-- Dodaj przedmiot do Sklepu -->
+    <div class="card mb-4">
+        <div class="card-header fw-bold border-bottom border-secondary text-white">
+            🍹 Dodaj przedmiot do Sklepu
+        </div>
+        <div class="card-body">
+            <form action="{{ url_for('admin.add_shop_item') }}" method="POST">
+                <div class="row g-2 mb-2">
+                    <div class="col-8">
+                        <input type="text" name="name" class="form-control" placeholder="Nazwa przedmiotu" required>
+                    </div>
+                    <div class="col-4">
+                        <input type="number" name="price" class="form-control" placeholder="Cena (MC)" min="0" required>
+                    </div>
+                </div>
+                <div class="row g-2 mb-3">
+                    <div class="col-4">
+                        <input type="text" name="icon" class="form-control" placeholder="Emoji (np. 🍹)" required>
+                    </div>
+                    <div class="col-8">
+                        <input type="text" name="description" class="form-control" placeholder="Krótki opis">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 fw-bold">Dodaj do sklepu</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Zarządzanie Użytkownikami -->
+    <div class="card mb-4">
+        <div class="card-header fw-bold border-bottom border-secondary text-white">
+            👥 Zarządzanie Użytkownikami
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-dark table-hover mb-0 align-middle text-center">
+                    <thead>
+                        <tr class="text-muted small border-bottom border-secondary">
+                            <th>Status</th>
+                            <th>ID</th>
+                            <th class="text-start">Nick</th>
+                            <th>Saldo (MC)</th>
+                            <th>Akcje</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if users %}
+                            {% for u in users %}
+                                <tr>
+                                    <td>
+                                        {% if u in online_users %}
+                                            <span title="Online">🟢</span>
+                                        {% else %}
+                                            <span title="Offline" class="text-muted">⚪</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="font-monospace">{{ u.user_code }}</td>
+                                    <td class="text-start fw-bold">
+                                        {{ u.username }}
+                                        {% if u.is_admin %}
+                                            <span class="badge bg-warning text-dark ms-1">Admin</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <form action="{{ url_for('admin.set_balance', user_id=u.id) }}" method="POST" class="d-flex align-items-center justify-content-center gap-1">
+                                            <input type="number" name="balance" value="{{ u.balance }}" class="form-control form-control-sm text-center" style="width: 70px;" required>
+                                            <button type="submit" class="btn btn-sm text-white" style="background-color: #7928ca;">Zapisz</button>
+                                        </form>
+                                    </td>
+                                    <td>
+                                        {% if not u.is_admin %}
+                                            <form action="{{ url_for('admin.delete_user', user_id=u.id) }}" method="POST" onsubmit="return confirm('Czy na pewno usunąć użytkownika {{ u.username }}?');">
+                                                <button type="submit" class="btn btn-sm btn-danger">Usuń</button>
+                                            </form>
+                                        {% else %}
+                                            <span class="text-muted small">—</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="5" class="py-3 text-muted">Brak zarejestrowanych użytkowników.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reset Gry -->
+    <div class="card mb-4 border-danger">
+        <div class="card-header fw-bold border-bottom border-danger text-danger">
+            ⚠️ Reset Stanu Gry
+        </div>
+        <div class="card-body">
+            <p class="small text-muted mb-3">Ustaw startowe saldo wszystkim graczon jednocześnie.</p>
+            <form action="{{ url_for('admin.reset_all') }}" method="POST" onsubmit="return confirm('Czy na pewno chcesz zresetować salda wszystkim graczom?');">
+                <div class="input-group">
+                    <input type="number" name="amount" class="form-control" value="100" min="0" placeholder="Kwota początkowa (np. 100)" required>
+                    <button type="submit" class="btn btn-danger fw-bold">🔄 Zresetuj wszystkim salda</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
