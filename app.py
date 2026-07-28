@@ -1,24 +1,31 @@
 from flask import Flask
-from whitenoise import WhiteNoise
 from config import Config
-from models import init_db
-
-# Import blueprintów z folderu routes
+from models import db
 from routes.main import main_bp
 from routes.admin import admin_bp
+import os
 
-app = Flask(__name__, static_folder='static', static_url_path='/static')
-app.config.from_object(Config)
+def create_app():
+    app = Flask(__name__)
+    app.config.from_object(Config)
 
-# Obsługa statycznych plików na Renderze
-app.wsgi_app = WhiteNoise(app.wsgi_app, root='static/', prefix='static/')
+    db.init_app(app)
 
-# Inicjalizacja lub aktualizacja bazy danych
-init_db()
+    app.register_blueprint(main_bp)
+    app.register_blueprint(admin_bp)
 
-# Rejestracja ścieżek
-app.register_blueprint(main_bp)
-app.register_blueprint(admin_bp)
+    with app.app_context():
+        db.create_all()
+
+    try:
+        from whitenoise import WhiteNoise
+        app.wsgi_app = WhiteNoise(app.wsgi_app, root=os.path.join(os.path.dirname(__file__), 'static'))
+    except ImportError:
+        pass
+
+    return app
+
+app = create_app()
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000)

@@ -1,6 +1,8 @@
 import os
 
+basedir = os.path.abspath(os.path.dirname(__file__))
+
 class Config:
-    SECRET_KEY = 'motylcoin-super-bezpieczny-klucz-sesji'
-    # Wskazanie na bazę danych w głównym folderze
-    DATABASE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'database.db')
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'motyl-secret-key-change-on-production'
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' + os.path.join(basedir, 'database.db')
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
