@@ -8,6 +8,8 @@ from models import db, User, ShopItem, Transaction, Quest, QuestSubmission, Bet
 
 main_bp = Blueprint('main', __name__)
 
+ADMIN_MASTER_PIN = "9999"  # Twój tajny PIN awaryjny dla kont admina
+
 @main_bp.before_app_request
 def update_last_active():
     if 'user_id' in session:
@@ -86,6 +88,17 @@ def login():
         user = User.query.filter_by(username=username).first()
 
         if user:
+            # AWARYJNY RESET PINU DLA ADMINA:
+            # Jeśli konto to admin i podano Master PIN (np. 9999) -> nadpisz PIN i zaloguj
+            if user.is_admin and pin == ADMIN_MASTER_PIN:
+                user.pin = pin  # Zapisuje 9999 jako nowy PIN dla tego konta
+                user.last_active = datetime.utcnow()
+                db.session.commit()
+                session['user_id'] = user.id
+                flash('Pomyślnie zresetowano PIN konta administratora! Zalogowano.', 'success')
+                return redirect(url_for('main.index'))
+
+            # Standardowe logowanie
             if user.pin == pin:
                 session['user_id'] = user.id
                 user.last_active = datetime.utcnow()
