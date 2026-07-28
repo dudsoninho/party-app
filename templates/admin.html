@@ -104,5 +104,25 @@
 <p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;a href="{{ url_for('main.index') }}" class="btn" style="background: #33334d; text-decoration: none; text-align: center; display: block; margin-top: 20px;"&gt;</span><span class="s3">←</span><span class="s1"> Powrót do Gry&lt;/a&gt;</span></p>
 <p class="p1"><span class="s1">&lt;/div&gt;</span></p>
 <p class="p1"><span class="s1">{% endblock %}</span></p>
+<p class="p1"><span class="s1">&lt;!-- Sekcja Resetu / Nowej Rundy --&gt;</span></p>
+<p class="p1"><span class="s1">&lt;div class="card my-4 border-danger"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="card-header bg-danger text-white font-weight-bold"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>⚠️ Reset Globalny / Nowa Runda</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="card-body"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;p class="card-text"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>Ustawia jednakowe saldo wszystkim zarejestrowanym użytkownikom. Użyj tej opcji, aby rozpocząć nową rundę gry.</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;form action="{{ url_for('admin.reset_all') }}" method="POST" class="form-inline" onsubmit="return confirm('Czy na pewno chcesz zresetować saldo WSZYSTKIM graczom?');"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="form-group mr-2 mb-2"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;label for="amount" class="sr-only"&gt;Kwota docelowa&lt;/label&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;input type="number" class="form-control" id="amount" name="amount" value="100" min="0" placeholder="Kwota (np. 100)"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;button type="submit" class="btn btn-danger mb-2"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>🚀 Nuke / Resetuj wszystkim</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/form&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/div&gt;</span></p>
 </body>
 </html>
