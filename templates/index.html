@@ -1,64 +1,78 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2487.6">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000; min-height: 14.0px}
-    span.s1 {font-kerning: none}
-  </style>
-</head>
-<body>
-<p class="p1"><span class="s1">{% extends "base.html" %}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">{% block content %}</span></p>
-<p class="p1"><span class="s1">&lt;div class="card"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;h2&gt;Cześć, {{ user.username }}!&lt;/h2&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;p style="color: #a0a0b0; margin-bottom: 10px; text-align: center;"&gt;Witaj w aplikacji MotylCoin.&lt;/p&gt;</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">    </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>{% with messages = get_flashed_messages(with_categories=true) %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>{% if messages %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>{% for category, message in messages %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;div style="padding: 12px; border-radius: 8px; margin: 15px 0; background: {% if category == 'danger' %}#ff2e4c33{% else %}#00ff8833{% endif %}; color: {% if category == 'danger' %}#ff2e4c{% else %}#00ff88{% endif %}; font-size: 14px;"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>{{ message }}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>{% endfor %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>{% endif %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>{% endwith %}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="balance-card"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;span class="balance-title"&gt;Twój stan konta:&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;span class="balance-amount"&gt;{{ user.balance }} COINów&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="card" style="background: #232333; padding: 20px; border-radius: 8px; margin: 20px 0;"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;h3 style="color: #fff; font-size: 18px; margin-bottom: 15px;"&gt;Przelej coiny&lt;/h3&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;form id="transfer-form" action="{{ url_for('main.transfer') }}" method="POST"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div style="margin-bottom: 12px;"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;label for="receiver"&gt;Nick odbiorcy:&lt;/label&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;input type="text" id="receiver" name="receiver" required placeholder="Wpisz nick..."&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div style="margin-bottom: 12px;"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;label for="amount"&gt;Kwota:&lt;/label&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;input type="number" id="amount" name="amount" min="1" required placeholder="0"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;button type="submit" class="btn btn-send"&gt;Wyślij przelew&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/form&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div style="background: #232333; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center;"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;span style="color: #a0a0b0; font-size: 14px; display: block; margin-bottom: 12px;"&gt;Twój kod QR do otrzymywania coinów:&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;img src="data:image/png;base64,{{ qr_code }}" alt="Kod QR użytkownika" style="width: 150px; height: 150px; border-radius: 8px; background: #fff; padding: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;a href="{{ url_for('main.logout') }}" class="btn" style="background: #33334d; text-decoration: none; text-align: center; display: block;"&gt;Wyloguj się&lt;/a&gt;</span></p>
-<p class="p1"><span class="s1">&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">&lt;div id="butterfly-container"&gt;&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">{% endblock %}</span></p>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <h2>Cześć, {{ user.username }}!</h2>
+        <span style="background: #7928ca; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">ID: {{ user.user_code }}</span>
+    </div>
+    <p style="color: #a0a0b0; text-align: center; margin-bottom: 10px;">Witaj w oficjalnej strefie Motyl Coin.</p>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div style="padding: 12px; border-radius: 8px; margin: 15px 0; background: {% if category == 'danger' %}rgba(255,46,76,0.2){% else %}rgba(0,255,136,0.2){% endif %}; color: {% if category == 'danger' %}#ff2e4c{% else %}#00ff88{% endif %}; font-size: 14px;">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="balance-card">
+        <span class="balance-title">Twój stan konta</span>
+        <span class="balance-amount">{{ user.balance }} MC</span>
+    </div>
+
+    <!-- Formularz Przelewu -->
+    <div class="card" style="background: #232333; padding: 20px; border-radius: 8px; margin: 20px 0;">
+        <h3 style="color: #fff; font-size: 18px; margin-bottom: 15px;">Wyślij przelew P2P</h3>
+        <form id="transfer-form" action="{{ url_for('main.transfer') }}" method="POST">
+            <div style="margin-bottom: 12px;">
+                <label for="receiver">ID lub Nick odbiorcy:</label>
+                <input type="text" id="receiver" name="receiver_id" required placeholder="np. 07 lub kasia">
+            </div>
+            <div style="margin-bottom: 12px;">
+                <label for="amount">Kwota (MC):</label>
+                <input type="number" id="amount" name="amount" min="1" required placeholder="10">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label for="title">Tytuł przelewu:</label>
+                <input type="text" id="title" name="title" required placeholder="Za drinka / za uśmiech">
+            </div>
+            <button type="submit" class="btn btn-send">Wyślij przelew</button>
+        </form>
+    </div>
+
+    <!-- Sklepik -->
+    <div class="card" style="background: #232333; padding: 20px; border-radius: 8px; margin: 20px 0;">
+        <h3 style="color: #fff; font-size: 18px; margin-bottom: 15px;">Sklepik Motylka 🛍️</h3>
+        <div class="shop-grid">
+            {% for item in shop_items %}
+            <div class="shop-item">
+                <div style="font-size: 2rem;">{{ item.icon }}</div>
+                <h4>{{ item.name }}</h4>
+                <p style="font-size: 0.8rem; color: #a0a0b0; margin: 4px 0;">{{ item.description }}</p>
+                <div class="price">{{ item.price }} MC</div>
+                <form action="{{ url_for('main.buy_item', item_id=item.id) }}" method="POST">
+                    <button type="submit" class="btn btn-buy">Kup</button>
+                </form>
+            </div>
+            {% else %}
+            <p style="grid-column: span 2; text-align: center; color: #a0a0b0;">Brak przedmiotów w sklepie.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Kod QR -->
+    <div style="background: #232333; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center;">
+        <span style="color: #a0a0b0; font-size: 14px; display: block; margin-bottom: 12px;">Twój kod QR identyfikacyjny:</span>
+        <img src="data:image/png;base64,{{ qr_code }}" alt="Kod QR użytkownika" style="width: 140px; height: 140px; border-radius: 8px; background: #fff; padding: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+    </div>
+
+    {% if user.is_admin == 1 %}
+    <a href="{{ url_for('admin.admin_panel') }}" class="btn" style="background: #ffd700; color: #000; text-decoration: none; text-align: center; display: block; margin-bottom: 10px; font-weight: bold;">Panel Administratora</a>
+    {% endif %}
+
+    <a href="{{ url_for('main.logout') }}" class="btn" style="background: #33334d; text-decoration: none; text-align: center; display: block;">Wyloguj się</a>
+</div>
+{% endblock %}
