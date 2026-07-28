@@ -66,12 +66,12 @@
             💸 Wyślij MotylCoiny
         </div>
         <div class="card-body">
-            <form action="{{ url_for('main.send_coins') }}" method="POST">
+            <form action="{{ url_for('main.transfer') }}" method="POST">
                 <div class="mb-3">
-                    <input type="text" name="receiver_code" class="form-control" placeholder="Kod odbiorcy (np. 1234)" required>
+                    <input type="text" name="receiver_id" class="form-control" placeholder="Kod ID lub Nick odbiorcy" required>
                 </div>
                 <div class="mb-3">
-                    <input type="number" name="amount" class="form-control" placeholder="Kwota (MC)" step="0.5" min="0.5" required>
+                    <input type="number" name="amount" class="form-control" placeholder="Kwota (MC)" min="1" required>
                 </div>
                 <div class="mb-3">
                     <input type="text" name="title" class="form-control" placeholder="Tytuł przelewu (opcjonalnie)">
@@ -97,7 +97,9 @@
                                     <h6 class="fw-bold mb-1">{{ item.name }}</h6>
                                     <small class="text-muted d-block mb-2">{{ item.description }}</small>
                                 </div>
-                                <span class="badge bg-success fs-6">{{ item.price }} MC</span>
+                                <form action="{{ url_for('main.buy_item', item_id=item.id) }}" method="POST">
+                                    <button type="submit" class="btn btn-sm btn-success w-100 fw-bold">Kup za {{ item.price }} MC</button>
+                                </form>
                             </div>
                         </div>
                     {% endfor %}
