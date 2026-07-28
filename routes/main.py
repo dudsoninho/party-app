@@ -1,146 +1,145 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session, flash
-from models import db, User, Transaction, ShopItem
-import qrcode
-import base64
-from io import BytesIO
 import random
+import io
+import base64
+import qrcode
+from flask import Blueprint, render_template, request, redirect, url_for, session, flash
+from models import db, User, ShopItem, Transaction
 
 main_bp = Blueprint('main', __name__)
 
-def generate_qr(data):
-    qr = qrcode.QRCode(version=1, box_size=10, border=2)
-    qr.add_data(data)
-    qr.make(fit=True)
-    img = qr.make_image(fill='black', back_color='white')
-    buffered = BytesIO()
-    img.save(buffered, format="PNG")
-    return base64.b64encode(buffered.getvalue()).decode('utf-8')
-
 def generate_unique_code():
-    existing = {u.user_code for u in User.query.all()}
-    for _ in range(100):
+    while True:
         code = f"{random.randint(1, 99):02d}"
-        if code not in existing:
+        if not User.query.filter_by(user_code=code).first():
             return code
-    return '99'
 
-@main_bp.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        username = request.form.get('username', '').strip().lower()
-        if not username:
-            flash('Podaj poprawny nick.', 'danger')
-            return redirect(url_for('main.login'))
-        
-        user = User.query.filter_by(username=username).first()
-        if not user:
-            is_admin_val = 1 if username in ['admin', 'magda'] else 0
-            user_code_val = generate_unique_code()
-            user = User(
-                username=username, 
-                user_code=user_code_val, 
-                balance=100, 
-                is_admin=is_admin_val
-            )
-            db.session.add(user)
-            db.session.commit()
-            flash(f'Twój unikalny kod ID to: {user_code_val}. Otrzymałeś 100 Motyl Coinów na start!', 'success')
-        
-        session['user_id'] = user.id
-        return redirect(url_for('main.index'))
-    
-    return render_template('login.html')
-
-@main_bp.route('/', methods=['GET'])
+@main_bp.route('/')
 def index():
     if 'user_id' not in session:
         return redirect(url_for('main.login'))
     
     user = User.query.get(session['user_id'])
     if not user:
-        session.clear()
+        session.pop('user_id', None)
         return redirect(url_for('main.login'))
-    
+
     shop_items = ShopItem.query.all()
-    qr_data = f"MOTYLCOIN_USER:{user.user_code}"
-    qr_code = generate_qr(qr_data)
+
+    qr_data = f"{request.host_url}?to={user.user_code}"
+    qr = qrcode.QRCode(version=1, box_size=5, border=2)
+    qr.add_data(qr_data)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="black", back_color="white")
     
-    return render_template('index.html', user=user, shop_items=shop_items, qr_code=qr_code)
+    buf = io.BytesIO()
+    img.save(buf)
+    qr_b64 = base64.b64encode(buf.getvalue()).decode('utf-8')
+
+    return render_template('index.html', user=user, shop_items=shop_items, qr_code=qr_b64)
+
+@main_bp.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form.get('username', '').strip()
+        pin = request.form.get('pin', '').strip()
+
+        if not username or not pin or len(pin) != 4 or not pin.isdigit():
+            flash('Podaj nick i 4-cyfrowy PIN!', 'danger')
+            return redirect(url_for('main.login'))
+
+        user = User.query.filter_by(username=username).first()
+
+        if user:
+            if user.pin == pin:
+                session['user_id'] = user.id
+                return redirect(url_for('main.index'))
+            else:
+                flash('Niepoprawny PIN dla tego nicku!', 'danger')
+                return redirect(url_for('main.login'))
+        else:
+            is_admin_flag = 1 if username.lower() in ['admin', 'magda'] else 0
+            new_code = generate_unique_code()
+            new_user = User(
+                username=username,
+                pin=pin,
+                user_code=new_code,
+                balance=100,
+                is_admin=is_admin_flag
+            )
+            db.session.add(new_user)
+            db.session.commit()
+            
+            session['user_id'] = new_user.id
+            flash(f'Utworzono nowe konto! Twój kod ID to: {new_code}. Otrzymujesz 100 MC na start!', 'success')
+            return redirect(url_for('main.index'))
+
+    return render_template('login.html')
+
+@main_bp.route('/logout')
+def logout():
+    session.pop('user_id', None)
+    return redirect(url_for('main.login'))
 
 @main_bp.route('/transfer', methods=['POST'])
 def transfer():
     if 'user_id' not in session:
-        return {'success': False, 'message': 'Brak autoryzacji.'}, 401
-    
+        return redirect(url_for('main.login'))
+
     sender = User.query.get(session['user_id'])
-    data = request.get_json() if request.is_json else request.form
-    
-    receiver_input = str(data.get('receiver_id', '')).strip().lower()
+    receiver_input = request.form.get('receiver_id', '').strip()
+    amount_str = request.form.get('amount', '0')
+    title = request.form.get('title', 'Przelew P2P').strip()
+
     try:
-        amount = int(data.get('amount', 0))
+        amount = int(amount_str)
     except ValueError:
-        return {'success': False, 'message': 'Nieprawidłowa kwota.'}, 400
-    
-    title = data.get('title', 'Przelew P2P').strip()
-    
+        flash('Nieprawidłowa kwota!', 'danger')
+        return redirect(url_for('main.index'))
+
     if amount <= 0:
-        return {'success': False, 'message': 'Kwota musi być większa od zera.'}, 400
-        
+        flash('Kwota musi być większa niż 0!', 'danger')
+        return redirect(url_for('main.index'))
+
     if sender.balance < amount:
-        return {'success': False, 'message': 'Niewystarczająca ilość Motyl Coinów.'}, 400
-        
-    receiver = User.query.filter((User.user_code == receiver_input) | (User.username == receiver_input)).first()
-    
+        flash('Brak wystarczających środków na koncie!', 'danger')
+        return redirect(url_for('main.index'))
+
+    receiver = User.query.filter(
+        (User.user_code == receiver_input) | (User.username == receiver_input)
+    ).first()
+
     if not receiver:
-        return {'success': False, 'message': 'Nie znaleziono odbiorcy o takim ID lub nicku.'}, 404
-        
-    if sender.id == receiver.id:
-        return {'success': False, 'message': 'Nie możesz przelać środków do samego siebie.'}, 400
-        
+        flash('Odbiorca nie został znaleziony!', 'danger')
+        return redirect(url_for('main.index'))
+
+    if receiver.id == sender.id:
+        flash('Nie możesz wysłać przelewu do samego siebie!', 'danger')
+        return redirect(url_for('main.index'))
+
     sender.balance -= amount
     receiver.balance += amount
-    
-    tx = Transaction(
-        sender_id=sender.id,
-        receiver_id=receiver.id,
-        amount=amount,
-        title=title
-    )
+
+    tx = Transaction(sender_id=sender.id, receiver_id=receiver.id, amount=amount, title=title)
     db.session.add(tx)
     db.session.commit()
-    
-    if request.is_json:
-        return {'success': True, 'message': f'Przelew w wysokości {amount} MC powiódł się!'}
-    
-    flash(f'Przelew w wysokości {amount} MC powiódł się!', 'success')
+
+    flash(f'Pomyślnie wysłano {amount} MC do {receiver.username}!', 'success')
     return redirect(url_for('main.index'))
 
-@main_bp.route('/buy_item/<int:item_id>', methods=['POST'])
+@main_bp.route('/buy/<int:item_id>', methods=['POST'])
 def buy_item(item_id):
     if 'user_id' not in session:
         return redirect(url_for('main.login'))
-        
+
     user = User.query.get(session['user_id'])
     item = ShopItem.query.get_or_404(item_id)
-    
-    if user.balance < item.price:
-        flash('Za mało Motyl Coinów, aby kupić ten przedmiot!', 'danger')
-        return redirect(url_for('main.index'))
-        
-    user.balance -= item.price
-    tx = Transaction(
-        sender_id=user.id,
-        receiver_id=user.id,
-        amount=item.price,
-        title=f"Zakup w sklepie: {item.name}"
-    )
-    db.session.add(tx)
-    db.session.commit()
-    
-    flash(f'Zakupiono pomyślnie: {item.name}!', 'success')
-    return redirect(url_for('main.index'))
 
-@main_bp.route('/logout', methods=['GET'])
-def logout():
-    session.clear()
-    return redirect(url_for('main.login'))
+    if user.balance < item.price:
+        flash('Masz za mało Motyl Coinów!', 'danger')
+        return redirect(url_for('main.index'))
+
+    user.balance -= item.price
+    db.session.commit()
+
+    flash(f'Zakupiono: {item.name} za {item.price} MC!', 'success')
+    return redirect(url_for('main.index'))
