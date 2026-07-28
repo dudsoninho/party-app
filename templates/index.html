@@ -26,7 +26,7 @@
         <div class="d-flex align-items-center gap-3">
             <span class="text-light">Cześć, <strong>{{ user.username }}</strong>! (ID: {{ user.user_code }})</span>
             {% if user.is_admin %}
-                <a href="{{ url_for('admin.index') }}" class="btn btn-warning btn-sm fw-bold">
+                <a href="/admin" class="btn btn-warning btn-sm fw-bold">
                     <i class="fa-solid fa-crown me-1"></i> Panel Admina
                 </a>
             {% endif %}
@@ -251,7 +251,6 @@
 <script>
     let activeQuestId = null;
 
-    // Obsługa Koła Fortuny
     async function spinWheel() {
         const btn = document.getElementById('spin-btn');
         const resultDiv = document.getElementById('spin-result');
@@ -278,7 +277,6 @@
         }
     }
 
-    // Checking & Managing Flash Quests
     async function checkActiveQuest() {
         try {
             const res = await fetch('/api/active-quest');
@@ -318,7 +316,6 @@
         }
     }
 
-    // Check active quests every 10 seconds
     setInterval(checkActiveQuest, 10000);
     checkActiveQuest();
 </script>
