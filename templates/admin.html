@@ -10,119 +10,183 @@
     p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000}
     p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000; min-height: 14.0px}
     span.s1 {font-kerning: none}
-    span.s2 {font: 12.0px 'Apple Color Emoji'; font-kerning: none}
-    span.s3 {font: 12.0px Symbol; font-kerning: none}
   </style>
 </head>
 <body>
-<p class="p1"><span class="s1">{% extends "base.html" %}</span></p>
+<p class="p1"><span class="s1">&lt;!DOCTYPE html&gt;</span></p>
+<p class="p1"><span class="s1">&lt;html lang="pl"&gt;</span></p>
+<p class="p1"><span class="s1">&lt;head&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;title&gt;Panel Admina - MotylCoin&lt;/title&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;style&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>body {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>background-color: #121212;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>color: #ffffff;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.card {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>background-color: #1e1e1e;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>border-color: #333333;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.form-control, .form-select {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>background-color: #2b2b2b;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>border-color: #444444;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>color: #ffffff;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.form-control:focus, .form-select:focus {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>background-color: #333333;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>color: #ffffff;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>border-color: #0d6efd;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>box-shadow: none;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.form-control::placeholder {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>color: #888888;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.table-dark {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>--bs-table-bg: #1e1e1e;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>--bs-table-border-color: #333333;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/head&gt;</span></p>
+<p class="p1"><span class="s1">&lt;body&gt;</span></p>
 <p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1">{% block content %}</span></p>
-<p class="p1"><span class="s1">&lt;div class="card"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;h2&gt;Panel Administratora </span><span class="s2">⚙️</span><span class="s1">&lt;/h2&gt;</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">    </span></span></p>
+<p class="p1"><span class="s1">&lt;div class="container py-4" style="max-width: 700px;"&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;!-- Nagłówek --&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="d-flex justify-content-between align-items-center mb-4"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;h3 class="mb-0 fw-bold text-white"&gt;⚙️ Panel Administratora&lt;/h3&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;a href="{{ url_for('main.index') }}" class="btn btn-outline-light btn-sm"&gt;← Powrót do Gry&lt;/a&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;!-- Powiadomienia Flash --&gt;</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>{% with messages = get_flashed_messages(with_categories=true) %}</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>{% if messages %}</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>{% for category, message in messages %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;div style="padding: 10px; border-radius: 8px; margin: 10px 0; background: rgba(0,255,136,0.2); color: #00ff88; font-size: 14px;"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;div class="alert alert-{{ category }} alert-dismissible fade show mb-3" role="alert"&gt;</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>{{ message }}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"&gt;&lt;/button&gt;</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>{% endfor %}</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>{% endif %}</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>{% endwith %}</span></p>
 <p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;!-- Sekcja Aktywnych Użytkowników Online --&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div style="margin: 20px 0; background: #1f2d24; border: 1px solid #00ff88; padding: 15px; border-radius: 8px;"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;h3 style="color: #00ff88; margin-bottom: 8px;"&gt;Zalogowani Użytkownicy Online </span><span class="s2">🟢</span><span class="s1"> ({{ online_users|length }})&lt;/h3&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>{% if online_users %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;ul style="list-style: none; padding: 0; margin: 0; display: flex; gap: 10px; flex-wrap: wrap;"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>{% for u in online_users %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;li style="background: rgba(0, 255, 136, 0.15); padding: 5px 12px; border-radius: 15px; font-size: 0.85rem;"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;strong&gt;{{ u.username }}&lt;/strong&gt; (ID: {{ u.user_code }})</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/li&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>{% endfor %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/ul&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>{% else %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;p style="color: #a0a0b0; font-size: 0.85rem; margin: 0;"&gt;Brak aktywnych użytkowników w tej chwili.&lt;/p&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>{% endif %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div style="margin: 20px 0; background: #232333; padding: 15px; border-radius: 8px;"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;h3&gt;Dodaj przedmiot do Sklepu&lt;/h3&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;form action="{{ url_for('admin.add_item') }}" method="POST" style="margin-top: 10px;"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;input type="text" name="name" placeholder="Nazwa przedmiotu" required style="margin-bottom: 8px;"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;input type="number" name="price" placeholder="Cena (MC)" required style="margin-bottom: 8px;"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;input type="text" name="icon" placeholder="Emoji (np. </span><span class="s2">🍹</span><span class="s1">, </span><span class="s2">🍕</span><span class="s1">)" required style="margin-bottom: 8px;"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;input type="text" name="description" placeholder="Krótki opis" style="margin-bottom: 12px;"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;button type="submit" class="btn btn-send"&gt;Dodaj do sklepu&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/form&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div style="margin: 20px 0; background: #232333; padding: 15px; border-radius: 8px;"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;h3&gt;Zarządzanie Użytkownikami&lt;/h3&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;table style="width: 100%; border-collapse: collapse; margin-top: 10px; color: #fff; font-size: 0.9rem;"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;thead&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;tr style="border-bottom: 1px solid #444; text-align: left;"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;th style="padding: 8px;"&gt;Status&lt;/th&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;th style="padding: 8px;"&gt;ID&lt;/th&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;th style="padding: 8px;"&gt;Nick&lt;/th&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;th style="padding: 8px;"&gt;Saldo&lt;/th&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;th style="padding: 8px;"&gt;Akcje&lt;/th&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;/tr&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/thead&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;tbody&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>{% for u in users %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;tr style="border-bottom: 1px solid #333;"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;td style="padding: 8px;"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>{% if u in online_users %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span></span><span class="s2">🟢</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>{% else %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span></span><span class="s2">⚪</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>{% endif %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/td&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;td style="padding: 8px;"&gt;{{ u.user_code }}&lt;/td&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;td style="padding: 8px;"&gt;{{ u.username }} {% if u.is_admin %}(Admin){% endif %}&lt;/td&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;td style="padding: 8px;"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;form action="{{ url_for('admin.set_balance', user_id=u.id) }}" method="POST" style="display: flex; gap: 5px;"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;input type="number" name="balance" value="{{ u.balance }}" style="width: 60px; padding: 2px 5px;"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;button type="submit" style="background: #7928ca; border: None; color: #fff; padding: 2px 8px; border-radius: 4px; cursor: pointer;"&gt;Zapisz&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;/form&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/td&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;td style="padding: 8px;"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>{% if not u.is_admin %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;form action="{{ url_for('admin.delete_user', user_id=u.id) }}" method="POST" onsubmit="return confirm('Czy na pewno usunąć?');"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;button type="submit" style="background: #ff2e4c; border: None; color: #fff; padding: 4px 8px; border-radius: 4px; cursor: pointer;"&gt;Usuń&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;/form&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>{% endif %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/td&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;/tr&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>{% endfor %}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/tbody&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/table&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;a href="{{ url_for('main.index') }}" class="btn" style="background: #33334d; text-decoration: none; text-align: center; display: block; margin-top: 20px;"&gt;</span><span class="s3">←</span><span class="s1"> Powrót do Gry&lt;/a&gt;</span></p>
-<p class="p1"><span class="s1">&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">{% endblock %}</span></p>
-<p class="p1"><span class="s1">&lt;!-- Sekcja Resetu / Nowej Rundy --&gt;</span></p>
-<p class="p1"><span class="s1">&lt;div class="card my-4 border-danger"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="card-header bg-danger text-white font-weight-bold"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>⚠️ Reset Globalny / Nowa Runda</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="card-body"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;p class="card-text"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>Ustawia jednakowe saldo wszystkim zarejestrowanym użytkownikom. Użyj tej opcji, aby rozpocząć nową rundę gry.</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/p&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;form action="{{ url_for('admin.reset_all') }}" method="POST" class="form-inline" onsubmit="return confirm('Czy na pewno chcesz zresetować saldo WSZYSTKIM graczom?');"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="form-group mr-2 mb-2"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;label for="amount" class="sr-only"&gt;Kwota docelowa&lt;/label&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;input type="number" class="form-control" id="amount" name="amount" value="100" min="0" placeholder="Kwota (np. 100)"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;!-- Sekcja Zalogowani Użytkownicy Online --&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="card mb-4 border-success"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="card-body p-3"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;h5 class="card-title text-success mb-3 d-flex align-items-center gap-2"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>🟢 Zalogowani Użytkownicy Online</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;span class="badge bg-success rounded-pill fs-6"&gt;{{ online_users|length if online_users else 0 }}&lt;/span&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/h5&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="d-flex flex-wrap gap-2"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>{% if online_users %}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>{% for u in online_users %}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;span class="badge bg-dark border border-success text-white p-2 font-monospace"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;strong&gt;{{ u.username }}&lt;/strong&gt; &lt;span class="text-muted"&gt;(ID: {{ u.user_code }})&lt;/span&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;/span&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>{% endfor %}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>{% else %}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;small class="text-muted"&gt;Brak aktywnych użytkowników online.&lt;/small&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>{% endif %}</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;button type="submit" class="btn btn-danger mb-2"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>🚀 Nuke / Resetuj wszystkim</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/form&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
 <p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;!-- Dodaj przedmiot do Sklepu --&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="card mb-4"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="card-header fw-bold border-bottom border-secondary text-white"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>🍹 Dodaj przedmiot do Sklepu</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="card-body"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;form action="{{ url_for('admin.add_shop_item') }}" method="POST"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;div class="row g-2 mb-2"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;div class="col-8"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;input type="text" name="name" class="form-control" placeholder="Nazwa przedmiotu" required&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;div class="col-4"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;input type="number" name="price" class="form-control" placeholder="Cena (MC)" min="0" required&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;div class="row g-2 mb-3"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;div class="col-4"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;input type="text" name="icon" class="form-control" placeholder="Emoji (np. 🍹)" required&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;div class="col-8"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;input type="text" name="description" class="form-control" placeholder="Krótki opis"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;button type="submit" class="btn btn-primary w-100 fw-bold"&gt;Dodaj do sklepu&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/form&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;!-- Zarządzanie Użytkownikami --&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="card mb-4"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="card-header fw-bold border-bottom border-secondary text-white"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>👥 Zarządzanie Użytkownikami</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="card-body p-0"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="table-responsive"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;table class="table table-dark table-hover mb-0 align-middle text-center"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;thead&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;tr class="text-muted small border-bottom border-secondary"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;th&gt;Status&lt;/th&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;th&gt;ID&lt;/th&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;th class="text-start"&gt;Nick&lt;/th&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;th&gt;Saldo (MC)&lt;/th&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;th&gt;Akcje&lt;/th&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;/tr&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/thead&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;tbody&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>{% if users %}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>{% for u in users %}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                                </span>&lt;tr&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;td&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>{% if u.is_online %}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>&lt;span title="Online"&gt;🟢&lt;/span&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>{% else %}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>&lt;span title="Offline" class="text-muted"&gt;⚪&lt;/span&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>{% endif %}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;/td&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;td class="font-monospace"&gt;{{ u.user_code }}&lt;/td&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;td class="text-start fw-bold"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>{{ u.username }}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>{% if u.is_admin %}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>&lt;span class="badge bg-warning text-dark ms-1"&gt;Admin&lt;/span&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>{% endif %}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;/td&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;td&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>&lt;form action="{{ url_for('admin.set_balance', user_id=u.id) }}" method="POST" class="d-flex align-items-center justify-content-center gap-1"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>&lt;input type="number" name="balance" value="{{ u.balance }}" class="form-control form-control-sm text-center" style="width: 70px;" required&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>&lt;button type="submit" class="btn btn-sm btn-purple text-white" style="background-color: #7928ca;"&gt;Zapisz&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>&lt;/form&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;/td&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;td&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>{% if not u.is_admin %}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>&lt;form action="{{ url_for('admin.delete_user', user_id=u.id) }}" method="POST" onsubmit="return confirm('Czy na pewno usunąć użytkownika {{ u.username }}?');"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                                                </span>&lt;button type="submit" class="btn btn-sm btn-danger"&gt;Usuń&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>&lt;/form&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>{% else %}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                                            </span>&lt;span class="text-muted small"&gt;—&lt;/span&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                                        </span>{% endif %}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                                    </span>&lt;/td&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                                </span>&lt;/tr&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>{% endfor %}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>{% else %}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;tr&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                                </span>&lt;td colspan="5" class="py-3 text-muted"&gt;Brak zarejestrowanych użytkowników.&lt;/td&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;/tr&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                        </span>{% endif %}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/tbody&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;/table&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
 <p class="p1"><span class="s1">&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">&lt;script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"&gt;&lt;/script&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/body&gt;</span></p>
+<p class="p1"><span class="s1">&lt;/html&gt;</span></p>
 </body>
 </html>

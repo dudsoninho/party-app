@@ -34,6 +34,11 @@ def index():
 
     shop_items = ShopItem.query.all()
 
+    # Pobieranie historii transakcji użytkownika
+    history = Transaction.query.filter(
+        (Transaction.sender_id == user.id) | (Transaction.receiver_id == user.id)
+    ).order_by(Transaction.timestamp.desc()).all()
+
     qr_data = f"{request.host_url}?to={user.user_code}"
     qr = qrcode.QRCode(version=1, box_size=5, border=2)
     qr.add_data(qr_data)
@@ -44,7 +49,7 @@ def index():
     img.save(buf)
     qr_b64 = base64.b64encode(buf.getvalue()).decode('utf-8')
 
-    return render_template('index.html', user=user, shop_items=shop_items, qr_code=qr_b64)
+    return render_template('index.html', user=user, shop_items=shop_items, history=history, qr_code=qr_b64)
 
 @main_bp.route('/login', methods=['GET', 'POST'])
 def login():

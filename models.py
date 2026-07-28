@@ -26,3 +26,7 @@ class Transaction(db.Model):
     amount = db.Column(db.Integer, nullable=False)
     title = db.Column(db.String(100), default='Przelew P2P')
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    is_reverted = db.Column(db.Boolean, default=False)
+
+    sender = db.relationship('User', foreign_keys=[sender_id], backref='sent_transactions')
+    receiver = db.relationship('User', foreign_keys=[receiver_id], backref='received_transactions')

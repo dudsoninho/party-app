@@ -17,7 +17,7 @@ def check_admin():
 def admin_panel():
     users = User.query.all()
     items = ShopItem.query.all()
-    transactions = Transaction.query.order_by(Transaction.timestamp.desc()).limit(20).all()
+    transactions = Transaction.query.order_by(Transaction.timestamp.desc()).all()
     
     # Użytkownik uznawany za aktywnego, jeśli wykonał akcję w ciągu ostatnich 5 minut
     five_minutes_ago = datetime.utcnow() - timedelta(minutes=5)
@@ -58,19 +58,15 @@ def set_balance(user_id):
     db.session.commit()
     flash(f'Zmieniono saldo użytkownika {user.username} na {new_balance} MC.', 'success')
     return redirect(url_for('admin.admin_panel'))
+
 @admin_bp.route('/reset_all', methods=['POST'])
 def reset_all():
-    if not is_admin():
-        flash("Brak uprawnień.", "danger")
-        return redirect(url_for('main.index'))
-    
     try:
         new_balance = int(request.form.get('amount', 100))
         if new_balance < 0:
             flash("Kwota nie może być ujemna!", "warning")
             return redirect(url_for('admin.admin_panel'))
             
-        # Aktualizacja salda wszystkich użytkowników
         User.query.update({User.balance: new_balance})
         db.session.commit()
         
@@ -78,4 +74,20 @@ def reset_all():
     except ValueError:
         flash("Wprowadzono niepoprawną kwotę.", "danger")
         
+    return redirect(url_for('admin.admin_panel'))
+
+@admin_bp.route('/revert_tx/<int:tx_id>', methods=['POST'])
+def revert_transaction(tx_id):
+    tx = Transaction.query.get_or_404(tx_id)
+
+    if tx.is_reverted:
+        flash("Ta transakcja została już wcześniej cofnięta!", "warning")
+        return redirect(url_for('admin.admin_panel'))
+
+    tx.sender.balance += tx.amount
+    tx.receiver.balance -= tx.amount
+    tx.is_reverted = True
+
+    db.session.commit()
+    flash(f"Cofnięto transakcję #{tx.id} ({tx.amount} MC od {tx.sender.username} do {tx.receiver.username}).", "success")
     return redirect(url_for('admin.admin_panel'))

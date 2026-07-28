@@ -1,78 +1,197 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MotylCoin App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+        }
+        .card {
+            background-color: #1e1e1e;
+            border-color: #333333;
+        }
+        .form-control {
+            background-color: #2b2b2b;
+            border-color: #444444;
+            color: #ffffff;
+        }
+        .form-control:focus {
+            background-color: #333333;
+            color: #ffffff;
+            border-color: #0d6efd;
+            box-shadow: none;
+        }
+        .form-control::placeholder {
+            color: #888888;
+        }
+    </style>
+</head>
+<body>
 
-{% block content %}
-<div class="card">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-        <h2>Cześć, {{ user.username }}!</h2>
-        <span style="background: #7928ca; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">ID: {{ user.user_code }}</span>
+<div class="container py-4" style="max-width: 500px;">
+
+    <!-- Nagłówek i Nawigacja -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h4 class="mb-0 fw-bold text-white">Witaj, {{ user.username }}!</h4>
+            <small class="text-muted">Twój kod: <strong class="text-primary">{{ user.user_code }}</strong></small>
+        </div>
+        <div>
+            {% if user.is_admin == 1 %}
+                <a href="{{ url_for('admin.admin_panel') }}" class="btn btn-sm btn-warning font-weight-bold me-1">⚙️ Admin</a>
+            {% endif %}
+            <a href="{{ url_for('main.logout') }}" class="btn btn-sm btn-outline-danger">Wyloguj</a>
+        </div>
     </div>
-    <p style="color: #a0a0b0; text-align: center; margin-bottom: 10px;">Witaj w oficjalnej strefie Motyl Coin.</p>
-    
+
+    <!-- Powiadomienia Flash -->
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message in messages %}
-                <div style="padding: 12px; border-radius: 8px; margin: 15px 0; background: {% if category == 'danger' %}rgba(255,46,76,0.2){% else %}rgba(0,255,136,0.2){% endif %}; color: {% if category == 'danger' %}#ff2e4c{% else %}#00ff88{% endif %}; font-size: 14px;">
+                <div class="alert alert-{{ category }} alert-dismissible fade show mb-3" role="alert">
                     {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             {% endfor %}
         {% endif %}
     {% endwith %}
 
-    <div class="balance-card">
-        <span class="balance-title">Twój stan konta</span>
-        <span class="balance-amount">{{ user.balance }} MC</span>
-    </div>
-
-    <!-- Formularz Przelewu -->
-    <div class="card" style="background: #232333; padding: 20px; border-radius: 8px; margin: 20px 0;">
-        <h3 style="color: #fff; font-size: 18px; margin-bottom: 15px;">Wyślij przelew P2P</h3>
-        <form id="transfer-form" action="{{ url_for('main.transfer') }}" method="POST">
-            <div style="margin-bottom: 12px;">
-                <label for="receiver">ID lub Nick odbiorcy:</label>
-                <input type="text" id="receiver" name="receiver_id" required placeholder="np. 07 lub kasia">
-            </div>
-            <div style="margin-bottom: 12px;">
-                <label for="amount">Kwota (MC):</label>
-                <input type="number" id="amount" name="amount" min="1" required placeholder="10">
-            </div>
-            <div style="margin-bottom: 15px;">
-                <label for="title">Tytuł przelewu:</label>
-                <input type="text" id="title" name="title" required placeholder="Za drinka / za uśmiech">
-            </div>
-            <button type="submit" class="btn btn-send">Wyślij przelew</button>
-        </form>
-    </div>
-
-    <!-- Sklepik -->
-    <div class="card" style="background: #232333; padding: 20px; border-radius: 8px; margin: 20px 0;">
-        <h3 style="color: #fff; font-size: 18px; margin-bottom: 15px;">Sklepik Motylka 🛍️</h3>
-        <div class="shop-grid">
-            {% for item in shop_items %}
-            <div class="shop-item">
-                <div style="font-size: 2rem;">{{ item.icon }}</div>
-                <h4>{{ item.name }}</h4>
-                <p style="font-size: 0.8rem; color: #a0a0b0; margin: 4px 0;">{{ item.description }}</p>
-                <div class="price">{{ item.price }} MC</div>
-                <form action="{{ url_for('main.buy_item', item_id=item.id) }}" method="POST">
-                    <button type="submit" class="btn btn-buy">Kup</button>
-                </form>
-            </div>
-            {% else %}
-            <p style="grid-column: span 2; text-align: center; color: #a0a0b0;">Brak przedmiotów w sklepie.</p>
-            {% endfor %}
+    <!-- Karta Salda i Kod QR -->
+    <div class="card shadow-sm mb-4 border-primary">
+        <div class="card-body text-center p-4">
+            <span class="text-muted text-uppercase small">Stan konta</span>
+            <h1 class="display-4 fw-bold my-2 text-warning">{{ user.balance }} <small class="fs-4">MC</small></h1>
+            
+            {% if qr_code %}
+                <div class="mt-3">
+                    <img src="data:image/png;base64,{{ qr_code }}" alt="Kod QR" class="img-fluid rounded border border-light" style="max-width: 150px;">
+                    <div class="mt-1"><small class="text-muted" style="font-size: 0.75rem;">Zeskanuj, aby łatwo wysłać przelew</small></div>
+                </div>
+            {% endif %}
         </div>
     </div>
 
-    <!-- Kod QR -->
-    <div style="background: #232333; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center;">
-        <span style="color: #a0a0b0; font-size: 14px; display: block; margin-bottom: 12px;">Twój kod QR identyfikacyjny:</span>
-        <img src="data:image/png;base64,{{ qr_code }}" alt="Kod QR użytkownika" style="width: 140px; height: 140px; border-radius: 8px; background: #fff; padding: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+    <!-- Formularz przelewu P2P -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header fw-bold border-bottom border-secondary text-white">
+            💸 Wyślij MotylCoiny
+        </div>
+        <div class="card-body">
+            <form action="{{ url_for('main.transfer') }}" method="POST">
+                <div class="mb-2">
+                    <input type="text" name="receiver_id" class="form-control" placeholder="Odbiorca (Nick lub Kod ID)" required>
+                </div>
+                <div class="mb-2">
+                    <input type="number" name="amount" class="form-control" placeholder="Kwota (MC)" min="1" required>
+                </div>
+                <div class="mb-3">
+                    <input type="text" name="title" class="form-control" placeholder="Tytuł (np. Za drinka, Za zakład)" maxlength="50">
+                </div>
+                <button type="submit" class="btn btn-primary w-100 fw-bold">Wyślij przelew</button>
+            </form>
+        </div>
     </div>
 
-    {% if user.is_admin == 1 %}
-    <a href="{{ url_for('admin.admin_panel') }}" class="btn" style="background: #ffd700; color: #000; text-decoration: none; text-align: center; display: block; margin-bottom: 10px; font-weight: bold;">Panel Administratora</a>
-    {% endif %}
+    <!-- Dynamiczny Activity Feed: Historia Transakcji -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header fw-bold d-flex justify-content-between align-items-center border-bottom border-secondary text-white">
+            <span>📜 Historia Transakcji</span>
+            <small class="text-muted">Ostatnie akcje</small>
+        </div>
+        
+        <div class="card-body p-2" style="max-height: 350px; overflow-y: auto;">
+            {% if history %}
+                <div class="list-group list-group-flush">
+                    {% for tx in history %}
+                        <div class="list-group-item bg-transparent text-white border-bottom border-secondary px-2 py-2 d-flex align-items-center justify-content-between">
+                            
+                            <div class="d-flex align-items-center">
+                                <!-- Ikona statusu -->
+                                {% if tx.sender_id == user.id %}
+                                    <div class="badge rounded-circle bg-danger text-white me-2" style="font-size: 1rem; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
+                                        ↑
+                                    </div>
+                                {% else %}
+                                    <div class="badge rounded-circle bg-success text-white me-2" style="font-size: 1rem; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
+                                        ↓
+                                    </div>
+                                {% endif %}
 
-    <a href="{{ url_for('main.logout') }}" class="btn" style="background: #33334d; text-decoration: none; text-align: center; display: block;">Wyloguj się</a>
+                                <!-- Szczegóły transakcji -->
+                                <div>
+                                    <div class="fw-bold">
+                                        {% if tx.sender_id == user.id %}
+                                            Do: <span class="text-light">{{ tx.receiver.username }}</span>
+                                        {% else %}
+                                            Od: <span class="text-light">{{ tx.sender.username }}</span>
+                                        {% endif %}
+                                        {% if tx.is_reverted %}
+                                            <span class="badge bg-warning text-dark ms-1">Cofnięta</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="text-muted small" style="font-size: 0.8rem;">
+                                        {{ tx.title }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Kwota i Czas -->
+                            <div class="text-end">
+                                <div class="fw-bold {% if tx.sender_id == user.id %}text-danger{% else %}text-success{% endif %}">
+                                    {% if tx.sender_id == user.id %}-{% else %}+{% endif %}{{ tx.amount }} MC
+                                </div>
+                                <small class="text-muted" style="font-size: 0.75rem;">
+                                    {{ tx.timestamp.strftime('%H:%M | %d.%m') }}
+                                </small>
+                            </div>
+
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="p-4 text-center text-muted">
+                    <p class="mb-0">Brak historii przelewów.</p>
+                    <small>Wyślij swoje pierwsze MotylCoiny!</small>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Oferty / Sklep z Drinkami -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header fw-bold border-bottom border-secondary text-white">
+            🍹 Sklep / Bar
+        </div>
+        <div class="card-body p-2">
+            {% if shop_items %}
+                <div class="row g-2">
+                    {% for item in shop_items %}
+                        <div class="col-6">
+                            <div class="card h-100 bg-dark text-white border-secondary p-2 text-center">
+                                <div class="fs-2">{{ item.icon }}</div>
+                                <div class="fw-bold mt-1">{{ item.name }}</div>
+                                <small class="text-muted mb-2">{{ item.description }}</small>
+                                <form action="{{ url_for('main.buy_item', item_id=item.id) }}" method="POST" class="mt-auto">
+                                    <button type="submit" class="btn btn-sm btn-outline-warning w-100 fw-bold">
+                                        Kup za {{ item.price }} MC
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="p-3 text-center text-muted">Sklep jest obecnie pusty.</div>
+            {% endif %}
+        </div>
+    </div>
+
 </div>
-{% endblock %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
