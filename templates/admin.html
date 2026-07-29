@@ -9,7 +9,7 @@
 <body class="bg-light">
     <div class="container my-4">
         
-        <!-- NAGłÓWEK I POWRÓT -->
+        <!-- NAGŁÓWEK I POWRÓT -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>⚙️ Panel Administratora</h2>
             <a href="{{ url_for('main.index') }}" class="btn btn-outline-primary"><i class="fa-solid fa-arrow-left me-2"></i>Powrót do aplikacji</a>
@@ -42,7 +42,7 @@
             {% endif %}
         </div>
 
-        <!-- SEKCJA SZYBKICH NAGRÓD AGENDOWYCH -->
+        <!-- SZYBKIE NAGRODY AGENDOWE -->
         <div class="card shadow-sm p-4 mb-4">
             <h4 class="fw-bold mb-3"><i class="fa-solid fa-bolt text-warning me-2"></i>Szybkie Nagrody Agendowe</h4>
             <form action="{{ url_for('admin.quick_reward') }}" method="POST">
@@ -89,6 +89,119 @@
             </form>
         </div>
 
+        <!-- WYZWANIA FLASH (POP-UP EVENTY) -->
+        <div class="card shadow-sm p-4 mb-4">
+            <h4 class="fw-bold mb-3"><i class="fa-solid fa-bullhorn text-danger me-2"></i>Wyzwania Flash (Pop-up Eventy)</h4>
+            <form action="{{ url_for('admin.create_quest') }}" method="POST" class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <label class="form-label">Treść Wyzwania:</label>
+                    <input type="text" name="title" class="form-control" placeholder="np. Kto pierwszy przy barze?" required>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Nagroda (MC):</label>
+                    <input type="number" name="reward" value="50" class="form-control" required>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Czas trwania (sekundy):</label>
+                    <input type="number" name="duration" value="60" class="form-control" required>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-danger w-100">🚀 Odpal Wyzwanie</button>
+                </div>
+            </form>
+
+            <h5 class="fw-bold mt-4">Zgłoszenia oczekujące na weryfikację:</h5>
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle">
+                    <thead>
+                        <tr>
+                            <th>Gracz</th>
+                            <th>Wyzwanie</th>
+                            <th>Data zgłoszenia</th>
+                            <th>Akcje</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if pending_submissions %}
+                            {% for sub in pending_submissions %}
+                            <tr>
+                                <td><strong>{{ sub.user.username }}</strong> (ID: {{ sub.user.user_code }})</td>
+                                <td>{{ sub.quest.title }}</td>
+                                <td>{{ sub.created_at.strftime('%H:%M:%S') }}</td>
+                                <td>
+                                    <form action="{{ url_for('admin.review_submission', sub_id=sub.id, action='approve') }}" method="POST" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-success">Zatwierdź (+{{ sub.quest.reward }} MC)</button>
+                                    </form>
+                                    <form action="{{ url_for('admin.review_submission', sub_id=sub.id, action='reject') }}" method="POST" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Odrzuć</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted">Brak oczekujących zgłoszeń.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ZARZĄDZANIE SKLEPEM -->
+        <div class="card shadow-sm p-4 mb-4">
+            <h4 class="fw-bold mb-3"><i class="fa-solid fa-store text-primary me-2"></i>Zarządzanie Sklepem Imprezowym</h4>
+            <form action="{{ url_for('admin.add_shop_item') }}" method="POST" class="row g-3 mb-4">
+                <div class="col-md-3">
+                    <label class="form-label">Nazwa przedmiotu:</label>
+                    <input type="text" name="name" class="form-control" placeholder="np. Darmowy Drink" required>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Cena (MC):</label>
+                    <input type="number" name="price" class="form-control" placeholder="50" required>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Ikona (Emoji):</label>
+                    <input type="text" name="icon" value="🍹" class="form-control">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Opis:</label>
+                    <input type="text" name="description" class="form-control" placeholder="Krótki opis...">
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">Dodaj do sklepu</button>
+                </div>
+            </form>
+
+            <h5 class="fw-bold">Aktualne przedmioty w sklepie:</h5>
+            <div class="table-responsive">
+                <table class="table table-sm align-middle">
+                    <thead>
+                        <tr>
+                            <th>Ikona</th>
+                            <th>Nazwa</th>
+                            <th>Cena</th>
+                            <th>Opis</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                        <tr>
+                            <td><span style="font-size: 1.5rem;">{{ item.icon }}</span></td>
+                            <td><strong>{{ item.name }}</strong></td>
+                            <td>{{ item.price }} MC</td>
+                            <td class="text-muted">{{ item.description }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">Brak przedmiotów w sklepie.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
         <!-- ZARZĄDZANIE UŻYTKOWNIKAMI -->
         <div class="card shadow-sm p-4 mb-4">
             <h4 class="fw-bold mb-3"><i class="fa-solid fa-user-gear text-primary me-2"></i>Zarządzanie Użytkownikami</h4>
@@ -130,6 +243,49 @@
                         {% else %}
                         <tr>
                             <td colspan="5" class="text-center text-muted">Brak zarejestrowanych użytkowników.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- HISTORIA TRANSAKCJI I COFANIE -->
+        <div class="card shadow-sm p-4 mb-4">
+            <h4 class="fw-bold mb-3"><i class="fa-solid fa-history text-secondary me-2"></i>Historia Transakcji i Cofanie</h4>
+            <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                <table class="table table-sm align-middle">
+                    <thead>
+                        <tr>
+                            <th>Czas</th>
+                            <th>Od</th>
+                            <th>Do</th>
+                            <th>Kwota</th>
+                            <th>Tytuł</th>
+                            <th>Akcja</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tx in transactions %}
+                        <tr {% if tx.is_reverted %}class="table-danger text-decoration-line-through text-muted"{% endif %}>
+                            <td><small>{{ tx.timestamp.strftime('%H:%M:%S') }}</small></td>
+                            <td>{{ tx.sender.username if tx.sender else 'System' }}</td>
+                            <td>{{ tx.receiver.username if tx.receiver else 'Sklep' }}</td>
+                            <td><strong>{{ tx.amount }} MC</strong></td>
+                            <td>{{ tx.title }}</td>
+                            <td>
+                                {% if not tx.is_reverted %}
+                                <form action="{{ url_for('admin.revert_transaction', tx_id=tx.id) }}" method="POST" onsubmit="return confirm('Czy na pewno chcesz cofnąć tę transakcję? Monety wrócą do nadawcy.');">
+                                    <button type="submit" class="btn btn-sm btn-outline-warning">Cofnij</button>
+                                </form>
+                                {% else %}
+                                <span class="badge bg-secondary">Cofnięto</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted">Brak transakcji w historii.</td>
                         </tr>
                         {% endfor %}
                     </tbody>
