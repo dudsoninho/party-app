@@ -35,6 +35,64 @@ def admin_panel():
         pending_submissions=pending_submissions
     )
 
+@admin_bp.route('/seed_shop', methods=['POST'])
+def seed_shop():
+    items = [
+        # Interakcje z Magdą & Śpiew
+        {"name": "Nektarowy Duet z Królową Magdą 🎤", "price": 50, "description": "Wspólne odśpiewanie wybranego kawałka na środku parkietu przy DJ-u + toast z Jubilatką!", "icon": "🎤"},
+        {"name": "Szybka Metamorfoza: Karykatura 60s 🎨", "price": 35, "description": "Magda ma dokładnie 60 sekund na narysowanie Twojego portretu w motylej oprawie na Brystolu.", "icon": "🎨"},
+        {"name": "Królewski Taniec Skrzydeł 💃", "price": 45, "description": "Rezerwacja 1 pełnego tańca z Magdą przy jej ulubionym kawałku.", "icon": "💃"},
+        {"name": "Gorące Krzesło Królowej Motyli 🔥", "price": 40, "description": "Zadajesz Magdzie przez mikrofon 1 dowolne pytanie, na które MUSI odpowiedzieć bez ściemniania.", "icon": "🔥"},
+        {"name": "Kropelka Nektaru: Toast Urodzinowy 🥂", "price": 30, "description": "Wypicie specjalnego motylego szota z Magdą przy barze z bojowym okrzykiem roju.", "icon": "🥂"},
+        {"name": "Fotka w Łuskach Skrzydeł (Instax) 📸", "price": 80, "description": "Pamiątkowe zdjęcie Instax z Magdą w ozdobnej motylej ramce.", "icon": "📸"},
+
+        # Siatkówka Plażowa
+        {"name": "Wiatr w Skrzydła: Gwizdek Veto 🏐", "price": 40, "description": "Jednorazowe powtórzenie dowolnego punktu w meczu siatkówki.", "icon": "🏐"},
+        {"name": "Migracja Roju: Zmiana Pola 🌬️", "price": 30, "description": "Zmuszasz drużynę przeciwną do natychmiastowej zmiany stron boiska w siatkówce.", "icon": "🌬️"},
+        {"name": "Bojowy Pyłek Motyli (Doping DJ-a) 📣", "price": 25, "description": "DJ puszcza z głośników Twój utwór motywacyjny podczas Twojego serwu.", "icon": "📣"},
+
+        # Grill & Nektarium
+        {"name": "Pierwszy Nektar z Rusztu 🥩", "price": 35, "description": "Dostęp do pierwszej, najgorętszej porcji prosto z grilla poza kolejnością gąsienic.", "icon": "🥩"},
+        {"name": "Pracowity Trzmiel: Dostawca Drinków 🍹", "price": 50, "description": "Wyznaczona osoba z roju przynosi Ci 2 kolejne drinki bezpośrednio do leżaka.", "icon": "🍹"},
+        {"name": "Przelot nad Gąsienicami (Bez Kolejki) 🦋", "price": 50, "description": "Ominięcie całej kolejki do baru lub grilla z powołaniem się na status Motylej Arystokracji.", "icon": "🦋"},
+
+        # Kahoot & Strefa Chillout
+        {"name": "Podwójny Pyłek Mądrości (Kahoot Bonus) 🧠", "price": 60, "description": "Jeśli zajmiesz miejsce w TOP 5 w Kahoocie, Twoja wygrana w Motyl Coinach podwaja się!", "icon": "🧠"},
+        {"name": "Kokon VIP na Brystolu 🖌️", "price": 25, "description": "Rezerwacja centralnego miejsca z motylą ramką VIP na pamiątkowym plakacie.", "icon": "🖌️"},
+        {"name": "Kokon Spokoju: Rezerwacja VIP Leżaka 🛋️", "price": 60, "description": "Tabliczka 'ZAREZERWOWANE DLA KRÓLEWSKIEGO MOTYLA' na wybrany leżak na całą noc.", "icon": "🛋️"},
+
+        # DJ, Parkiet & Przywileje
+        {"name": "Solowy Lot Motyla na Parkiecie 🪩", "price": 30, "description": "DJ zatrzymuje na chwilę tłum, tworzy okręg i ogłasza Twój solowy popis taneczny!", "icon": "🪩"},
+        {"name": "Wielka Gąsienica Imprezowa (Pociąg) 🚂", "price": 35, "description": "Puszczenie kultowego utworu i poprowadzenie pociągu gąsienic przez teren resortu.", "icon": "🚂"},
+        {"name": "Metamorfoza Stylu DJ-a (5 Minut) 🎶", "price": 60, "description": "Narzucenie DJ-owi natychmiastowej zmiany gatunku muzyki na 5 minut.", "icon": "🎶"},
+        {"name": "Trzepot Skrzydeł DJ-a (Wybór Piosenki) 🎵", "price": 30, "description": "Prawo do zamówienia 1 utworu u DJ-a poza kolejnością.", "icon": "🎵"},
+        {"name": "Władca Motylej Konsoli (DJ 10 min) 🎧", "price": 120, "description": "Przejęcie konsoli i puszczenie własnej playlisty z telefonu przez 10 minut.", "icon": "🎧"},
+        {"name": "Wylinka ze Sprzątania 🧹", "price": 150, "description": "Bilet zwalniający ze sprzątania i nocnych porządków na koniec imprezy.", "icon": "🧹"},
+
+        # Licytacja 23:00
+        {"name": "Tajemniczy Kokon Metamorfozy (Mystery Box) 📦", "price": 80, "description": "[LICYTACJA 23:00] Zapudłowany gadżet niespodzianka (przekąski, gadżety, niespodzianki).", "icon": "📦"},
+        {"name": "Eliksir Odrodzenia Motyla (Kac-Kiler) 💊", "price": 100, "description": "[LICYTACJA 23:00] Izotonik, zupka chińska, aspiryna, woda na ciężki poranek.", "icon": "💊"},
+        {"name": "Złota Gąsienica Sezonu (Statuetka) 🏆", "price": 200, "description": "[LICYTACJA 23:00] Główny dyplom i statuetka Przyjaciela Sezonu Piaseczno Beach Resort.", "icon": "🏆"},
+        {"name": "Złoty Żeton Skrzydlatego Życzenia 🎫", "price": 250, "description": "[LICYTACJA 23:00] Prawo do wymyślenia 1 zadania dla Organizatora w przyszłości!", "icon": "🎫"}
+    ]
+
+    added_count = 0
+    for item_data in items:
+        existing = ShopItem.query.filter_by(name=item_data["name"]).first()
+        if not existing:
+            new_item = ShopItem(
+                name=item_data["name"],
+                price=item_data["price"],
+                description=item_data["description"],
+                icon=item_data.get("icon", "🍹")
+            )
+            db.session.add(new_item)
+            added_count += 1
+            
+    db.session.commit()
+    flash(f"Dodano {added_count} nowych motylich przedmiotów do sklepu!", "success")
+    return redirect(url_for('admin.admin_panel'))
+
 @admin_bp.route('/add_item', methods=['POST'])
 @admin_bp.route('/add-item', methods=['POST'])
 def add_shop_item():
@@ -45,7 +103,6 @@ def add_shop_item():
 
     if name and price:
         try:
-            # Konwersja na int zgodna z rozmiarem waluty w models.py
             item = ShopItem(name=name, price=int(price), description=description, icon=icon)
             db.session.add(item)
             db.session.commit()
@@ -55,6 +112,14 @@ def add_shop_item():
     else:
         flash('Wypełnij wszystkie wymagane pola.', 'warning')
 
+    return redirect(url_for('admin.admin_panel'))
+
+@admin_bp.route('/delete_shop_item/<int:item_id>', methods=['POST'])
+def delete_shop_item(item_id):
+    item = ShopItem.query.get_or_404(item_id)
+    db.session.delete(item)
+    db.session.commit()
+    flash(f"Usunięto przedmiot: {item.name}", "info")
     return redirect(url_for('admin.admin_panel'))
 
 @admin_bp.route('/delete_user/<int:user_id>', methods=['POST'])
@@ -77,7 +142,6 @@ def set_balance(user_id):
     new_balance = request.form.get('balance')
     if new_balance is not None:
         try:
-            # Konwersja na int zgodna z typem Integer w modelu User
             user.balance = int(new_balance)
             db.session.commit()
             flash(f'Zmieniono saldo użytkownika {user.username} na {user.balance} MC.', 'success')
@@ -126,7 +190,6 @@ def create_quest():
     mode = request.form.get('mode', 'auto')
 
     if title:
-        # Dezaktywujemy poprzednie wyzwania
         Quest.query.filter_by(is_active=True).update({Quest.is_active: False})
         
         new_quest = Quest(title=title, reward=reward, duration_seconds=duration, mode=mode)
@@ -148,6 +211,7 @@ def review_submission(sub_id, action):
             flash(f'Odrzucono zgłoszenie gracza {sub.user.username}.', 'info')
         db.session.commit()
     return redirect(url_for('admin.admin_panel'))
+
 @admin_bp.route('/quick_reward', methods=['POST'])
 def quick_reward():
     user_id = request.form.get('user_id', type=int)
@@ -157,13 +221,9 @@ def quick_reward():
     user = User.query.get_or_404(user_id)
     if amount is not None:
         user.balance += amount
-        
-        # Tworzymy wpis w historii transakcji, aby gracz widział za co dostał monety
-        # (Jako nadawcę możemy wskazać np. admina lub systemowego użytkownika, o ile istnieje)
         tx = Transaction(sender_id=session['user_id'], receiver_id=user.id, amount=amount, title=title)
         db.session.add(tx)
         db.session.commit()
-        
         flash(f'Przyznano +{amount} MC użytkownikowi {user.username} za: "{title}"!', 'success')
     else:
         flash('Niepoprawna kwota nagrody.', 'danger')
