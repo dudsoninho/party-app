@@ -11,7 +11,7 @@ class User(db.Model):
     balance = db.Column(db.Integer, default=100)
     is_admin = db.Column(db.Integer, default=0)
     last_active = db.Column(db.DateTime, default=datetime.utcnow)
-    last_spin = db.Column(db.DateTime, nullable=True) # Potrzebne do Cooldownu Koła Fortuny
+    last_spin = db.Column(db.DateTime, nullable=True)
 
 class ShopItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -19,6 +19,7 @@ class ShopItem(db.Model):
     price = db.Column(db.Integer, nullable=False)
     description = db.Column(db.String(200))
     icon = db.Column(db.String(10), default='🍹')
+    is_active = db.Column(db.Boolean, default=True)
 
 class Transaction(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -37,7 +38,7 @@ class Quest(db.Model):
     title = db.Column(db.String(200), nullable=False)
     reward = db.Column(db.Integer, nullable=False)
     duration_seconds = db.Column(db.Integer, nullable=False)
-    mode = db.Column(db.String(20), default='auto') # 'auto' lub 'manual'
+    mode = db.Column(db.String(20), default='auto')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     is_active = db.Column(db.Boolean, default=True)
 
@@ -45,21 +46,20 @@ class QuestSubmission(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     quest_id = db.Column(db.Integer, db.ForeignKey('quest.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    status = db.Column(db.String(20), default='pending') # 'pending', 'approved', 'rejected'
+    status = db.Column(db.String(20), default='pending')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     quest = db.relationship('Quest', backref='submissions')
     user = db.relationship('User', backref='quest_submissions')
 
-# Nowa tabela: Zakłady i Pojedynki P2P
 class Bet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     creator_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    opponent_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True) # None jeśli zakład dla wszystkich
+    opponent_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     title = db.Column(db.String(200), nullable=False)
     amount = db.Column(db.Integer, nullable=False)
-    bet_type = db.Column(db.String(20), default='duel') # 'duel' (P2P) lub 'party' (dla wszystkich)
-    status = db.Column(db.String(20), default='open') # 'open', 'accepted', 'resolved', 'canceled'
+    bet_type = db.Column(db.String(20), default='duel')
+    status = db.Column(db.String(20), default='open')
     winner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 

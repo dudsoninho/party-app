@@ -148,3 +148,24 @@ def review_submission(sub_id, action):
             flash(f'Odrzucono zgłoszenie gracza {sub.user.username}.', 'info')
         db.session.commit()
     return redirect(url_for('admin.admin_panel'))
+@admin_bp.route('/quick_reward', methods=['POST'])
+def quick_reward():
+    user_id = request.form.get('user_id', type=int)
+    amount = request.form.get('amount', type=int)
+    title = request.form.get('title', 'Nagroda Agendowa')
+
+    user = User.query.get_or_404(user_id)
+    if amount is not None:
+        user.balance += amount
+        
+        # Tworzymy wpis w historii transakcji, aby gracz widział za co dostał monety
+        # (Jako nadawcę możemy wskazać np. admina lub systemowego użytkownika, o ile istnieje)
+        tx = Transaction(sender_id=session['user_id'], receiver_id=user.id, amount=amount, title=title)
+        db.session.add(tx)
+        db.session.commit()
+        
+        flash(f'Przyznano +{amount} MC użytkownikowi {user.username} za: "{title}"!', 'success')
+    else:
+        flash('Niepoprawna kwota nagrody.', 'danger')
+        
+    return redirect(url_for('admin.admin_panel'))

@@ -2,263 +2,83 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Admina - MotylCoin</title>
+    <title>Panel Administratora - MotylCoin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body { background-color: #121212; color: #ffffff; }
-        .card { background-color: #1e1e1e; border-color: #333333; }
-        .form-control, .form-select { background-color: #2b2b2b; border-color: #444444; color: #ffffff; }
-        .form-control:focus, .form-select:focus { background-color: #333333; color: #ffffff; border-color: #0d6efd; box-shadow: none; }
-        .form-control::placeholder { color: #888888; }
-        .table-dark { --bs-table-bg: #1e1e1e; --bs-table-border-color: #333333; }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
+<body class="bg-light">
+    <div class="container my-4">
+        
+        <!-- NAGŁÓWEK I POWROT -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>⚙️ Panel Administratora</h2>
+            <a href="{{ url_for('main.index') }}" class="btn btn-outline-primary"><i class="fa-solid fa-arrow-left me-2"></i>Powrót do aplikacji</a>
+        </div>
 
-<div class="container py-4" style="max-width: 700px;">
+        <!-- FLASH MESSAGES -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="Tak, to jest fragment kodu Twojego szablonu w formacie Jinja2/HTML (`templates/admin.html`), choć wygląda na to, że przy wklejaniu mogła uciec część znaczników HTML (widoczne są tagi logiki jak `{% ... %}` oraz zmienne `{{ ... }}`, ale brakuje struktury znaczników takich jak `<div>`, `<h2>` itp.).
 
-    <!-- Nagłówek -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="mb-0 fw-bold text-white">⚙️ Panel Administratora</h3>
-        <a href="{{ url_for('main.index') }}" class="btn btn-outline-light btn-sm">← Powrót do Gry</a>
-    </div>
+Możesz wkleić ten blok z szybkimi nagrodami (ten ze skryptem JavaScript) bezpośrednio **przed sekcją zarządzania użytkownikami** (`👥 Zarządzanie Użytkownikami`) lub na sam koniec pliku. 
 
-    <!-- Powiadomienia Flash -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }} alert-dismissible fade show mb-3" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
+Oto jak możesz bezpiecznie umieścić sekcję szybkich nagród w swoim pliku `admin.html`:
 
-    <!-- Sekcja Zalogowani Użytkownicy Online -->
-    <div class="card mb-4 border-success">
-        <div class="card-body p-3">
-            <h5 class="card-title text-success mb-3 d-flex align-items-center gap-2">
-                🟢 Zalogowani Użytkownicy Online
-                <span class="badge bg-success rounded-pill fs-6">{{ online_users|length if online_users else 0 }}</span>
-            </h5>
-            <div class="d-flex flex-wrap gap-2">
-                {% if online_users %}
-                    {% for u in online_users %}
-                        <span class="badge bg-dark border border-success text-white p-2 font-monospace">
-                            <strong>{{ u.username }}</strong> <span class="text-muted">(ID: {{ u.user_code }})</span>
-                        </span>
+```html
+<!-- Sekcja Szybkich Nagród Agendowych -->
+<div class="card card-custom p-4 mb-4">
+    <h4 class="fw-bold mb-3"><i class="fa-solid fa-bolt text-warning me-2"></i>Szybkie Nagrody Agendowe</h4>
+    <form action="{{ url_for('admin.quick_reward') }}" method="POST">
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Wybierz Gracza:</label>
+                <select name="user_id" class="form-select" required>
+                    <option value="">-- Wybierz uczestnika --</option>
+                    {% for u in users %}
+                    <option value="{{ u.id }}">{{ u.username }} (ID: {{ u.user_code }})</option>
                     {% endfor %}
-                {% else %}
-                    <small class="text-muted">Brak aktywnych użytkowników online.</small>
-                {% endif %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Wybierz Nagrodę / Akcję:</label>
+                <select name="title" id="reward-preset" class="form-select" onchange="updateRewardAmount(this)" required>
+                    <option value="" data-amount="0">-- Wybierz osiągnięcie --</option>
+                    <optgroup label="Kahoot">
+                        <option value="Kahoot: 1. miejsce" data-amount="150">Kahoot: 1. miejsce (+150 MC)</option>
+                        <option value="Kahoot: 2. miejsce" data-amount="100">Kahoot: 2. miejsce (+100 MC)</option>
+                        <option value="Kahoot: 3. miejsce" data-amount="50">Kahoot: 3. miejsce (+50 MC)</option>
+                        <option value="Kahoot: Udział" data-amount="20">Kahoot: Udział (+20 MC)</option>
+                    </optgroup>
+                    <optgroup label="Siatkówka">
+                        <option value="Siatkówka: Wygrani" data-amount="50">Siatkówka: Wygrani (+50 MC)</option>
+                        <option value="Siatkówka: MVP" data-amount="30">Siatkówka: MVP (+30 MC)</option>
+                    </optgroup>
+                    <optgroup label="Odznaki / Parkiet">
+                        <option value="Odznaka: Pustynny Jastrząb" data-amount="30">Pustynny Jastrząb (+30 MC)</option>
+                        <option value="Odznaka: Sommelier" data-amount="20">Sommelier (+20 MC)</option>
+                        <option value="Odznaka: Parkietowy Banger" data-amount="30">Parkietowy Banger (+30 MC)</option>
+                        <option value="Odznaka: Król Parkietu" data-amount="50">Król Parkietu (+50 MC)</option>
+                    </optgroup>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Kwota (MC):</label>
+                <input type="number" id="reward-amount" name="amount" class="form-control" placeholder="MC" required>
+            </div>
+            <div class="col-md-1 d-flex align-items-end">
+                <button type="submit" class="btn btn-success w-100 fw-bold" title="Przyznaj"><i class="fa-solid fa-check"></i></button>
             </div>
         </div>
-    </div>
-
-    <!-- ⚡ CENTRUM DOWODZENIA WYZWANIAMI (FLASH QUESTS) -->
-    <div class="card mb-4 border-warning">
-        <div class="card-header fw-bold border-bottom border-warning text-warning d-flex align-items-center justify-content-between">
-            <span>⚡ Wyzwania Błyskawiczne (Flash Quests)</span>
-            <span class="badge bg-warning text-dark">AIRDROP</span>
-        </div>
-        <div class="card-body">
-            
-            <label class="form-label text-muted small fw-bold mb-2">🚀 SZYBKIE LAUNCHERY (1-CLICK):</label>
-            <div class="d-flex flex-wrap gap-2 mb-4">
-                <form action="{{ url_for('admin.create_quest') }}" method="POST" class="d-inline">
-                    <input type="hidden" name="title" value="Podejdź do najbliższej osoby, stuknij się szklanką i wznieś toast za zdrowie gospodarzy! 🥂">
-                    <input type="hidden" name="reward" value="30">
-                    <input type="hidden" name="duration" value="90">
-                    <input type="hidden" name="mode" value="auto">
-                    <button type="submit" class="btn btn-outline-warning btn-sm">🥂 Wspólny Toast (+30 MC, 90s)</button>
-                </form>
-
-                <form action="{{ url_for('admin.create_quest') }}" method="POST" class="d-inline">
-                    <input type="hidden" name="title" value="Znajdź solenizantkę i powiedz jej najmilszy komplement dzisiejszego wieczoru! 🎉">
-                    <input type="hidden" name="reward" value="50">
-                    <input type="hidden" name="duration" value="60">
-                    <input type="hidden" name="mode" value="auto">
-                    <button type="submit" class="btn btn-outline-warning btn-sm">👑 Komplement (+50 MC, 60s)</button>
-                </form>
-
-                <form action="{{ url_for('admin.create_quest') }}" method="POST" class="d-inline">
-                    <input type="hidden" name="title" value="Biegnij na parkiet do grupowego zdjęcia! Fotka robiona za 2 minuty! 📸">
-                    <input type="hidden" name="reward" value="100">
-                    <input type="hidden" name="duration" value="120">
-                    <input type="hidden" name="mode" value="auto">
-                    <button type="submit" class="btn btn-outline-warning btn-sm">📸 Foto Grupowo (+100 MC, 120s)</button>
-                </form>
-
-                <form action="{{ url_for('admin.create_quest') }}" method="POST" class="d-inline">
-                    <input type="hidden" name="title" value="Zrób 10-sekundowy solowy taniec na środku pokoju! 💃">
-                    <input type="hidden" name="reward" value="75">
-                    <input type="hidden" name="duration" value="45">
-                    <input type="hidden" name="mode" value="manual">
-                    <button type="submit" class="btn btn-outline-danger btn-sm">💃 Taniec (+75 MC, 45s, Weryfikacja)</button>
-                </form>
-            </div>
-
-            <!-- Kreator Własnego Wyzwania -->
-            <form action="{{ url_for('admin.create_quest') }}" method="POST" class="border p-3 rounded border-secondary bg-dark">
-                <label class="form-label text-white small fw-bold mb-2">✍️ STWÓRZ WŁASNE WYZWANIE:</label>
-                <div class="mb-2">
-                    <input type="text" name="title" class="form-control form-control-sm" placeholder="Treść wyzwania (np. Kto przyniesie Adminowi pustkę po drinku?)" required>
-                </div>
-                <div class="row g-2 mb-3">
-                    <div class="col-4">
-                        <input type="number" name="reward" class="form-control form-control-sm" placeholder="Nagroda (MC)" value="50" min="1" required>
-                    </div>
-                    <div class="col-4">
-                        <input type="number" name="duration" class="form-control form-control-sm" placeholder="Czas (sekundy)" value="60" min="10" required>
-                    </div>
-                    <div class="col-4">
-                        <select name="mode" class="form-select form-select-sm">
-                            <option value="auto">Tryb Ufny (Auto)</option>
-                            <option value="manual">Weryfikacja Admina</option>
-                        </select>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-warning btn-sm w-100 fw-bold">🚀 ODPAL POP-UP U WSZYSTKICH</button>
-            </form>
-
-            <!-- Sekcja Akceptacji Zgłoszeń -->
-            {% if pending_submissions %}
-                <div class="mt-4 pt-3 border-top border-secondary">
-                    <h6 class="text-info fw-bold mb-2">⏳ Zgłoszenia Czekające na Twoją Akceptację:</h6>
-                    <div class="list-group">
-                        {% for sub in pending_submissions %}
-                            <div class="list-group-item bg-dark border-secondary text-white d-flex justify-content-between align-items-center p-2">
-                                <div>
-                                    <strong>{{ sub.user.username }}</strong> zgłasza: <em>"{{ sub.quest.title }}"</em> (+{{ sub.quest.reward }} MC)
-                                </div>
-                                <div class="d-flex gap-1">
-                                    <form action="{{ url_for('admin.review_submission', sub_id=sub.id, action='approve') }}" method="POST" class="d-inline">
-                                        <button type="submit" class="btn btn-sm btn-success fw-bold">✔️ Przyznaj</button>
-                                    </form>
-                                    <form action="{{ url_for('admin.review_submission', sub_id=sub.id, action='reject') }}" method="POST" class="d-inline">
-                                        <button type="submit" class="btn btn-sm btn-danger fw-bold">❌ Odrzuć</button>
-                                    </form>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            {% endif %}
-
-        </div>
-    </div>
-
-    <!-- Dodaj przedmiot do Sklepu -->
-    <div class="card mb-4">
-        <div class="card-header fw-bold border-bottom border-secondary text-white">
-            🍹 Dodaj przedmiot do Sklepu
-        </div>
-        <div class="card-body">
-            <form action="{{ url_for('admin.add_shop_item') }}" method="POST">
-                <div class="row g-2 mb-2">
-                    <div class="col-8">
-                        <input type="text" name="name" class="form-control" placeholder="Nazwa przedmiotu" required>
-                    </div>
-                    <div class="col-4">
-                        <input type="number" name="price" class="form-control" placeholder="Cena (MC)" min="0" required>
-                    </div>
-                </div>
-                <div class="row g-2 mb-3">
-                    <div class="col-4">
-                        <input type="text" name="icon" class="form-control" placeholder="Emoji (np. 🍹)" required>
-                    </div>
-                    <div class="col-8">
-                        <input type="text" name="description" class="form-control" placeholder="Krótki opis">
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-primary w-100 fw-bold">Dodaj do sklepu</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Zarządzanie Użytkownikami -->
-    <div class="card mb-4">
-        <div class="card-header fw-bold border-bottom border-secondary text-white">
-            👥 Zarządzanie Użytkownikami
-        </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-dark table-hover mb-0 align-middle text-center">
-                    <thead>
-                        <tr class="text-muted small border-bottom border-secondary">
-                            <th>Status</th>
-                            <th>ID</th>
-                            <th class="text-start">Nick</th>
-                            <th>Saldo (MC)</th>
-                            <th>Akcje</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% if users %}
-                            {% for u in users %}
-                                <tr>
-                                    <td>
-                                        {% if u in online_users %}
-                                            <span title="Online">🟢</span>
-                                        {% else %}
-                                            <span title="Offline" class="text-muted">⚪</span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="font-monospace">{{ u.user_code }}</td>
-                                    <td class="text-start fw-bold">
-                                        {{ u.username }}
-                                        {% if u.is_admin %}
-                                            <span class="badge bg-warning text-dark ms-1">Admin</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <form action="{{ url_for('admin.set_balance', user_id=u.id) }}" method="POST" class="d-flex align-items-center justify-content-center gap-1">
-                                            <input type="number" name="balance" value="{{ u.balance }}" class="form-control form-control-sm text-center" style="width: 70px;" required>
-                                            <button type="submit" class="btn btn-sm text-white" style="background-color: #7928ca;">Zapisz</button>
-                                        </form>
-                                    </td>
-                                    <td>
-                                        {% if not u.is_admin %}
-                                            <form action="{{ url_for('admin.delete_user', user_id=u.id) }}" method="POST" onsubmit="return confirm('Czy na pewno usunąć użytkownika {{ u.username }}?');">
-                                                <button type="submit" class="btn btn-sm btn-danger">Usuń</button>
-                                            </form>
-                                        {% else %}
-                                            <span class="text-muted small">—</span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        {% else %}
-                            <tr>
-                                <td colspan="5" class="py-3 text-muted">Brak zarejestrowanych użytkowników.</td>
-                            </tr>
-                        {% endif %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <!-- Reset Gry -->
-    <div class="card mb-4 border-danger">
-        <div class="card-header fw-bold border-bottom border-danger text-danger">
-            ⚠️ Reset Stanu Gry
-        </div>
-        <div class="card-body">
-            <p class="small text-muted mb-3">Ustaw startowe saldo wszystkim graczon jednocześnie.</p>
-            <form action="{{ url_for('admin.reset_all') }}" method="POST" onsubmit="return confirm('Czy na pewno chcesz zresetować salda wszystkim graczom?');">
-                <div class="input-group">
-                    <input type="number" name="amount" class="form-control" value="100" min="0" placeholder="Kwota początkowa (np. 100)" required>
-                    <button type="submit" class="btn btn-danger fw-bold">🔄 Zresetuj wszystkim salda</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
+    </form>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+<script>
+function updateRewardAmount(select) {
+    const selectedOption = select.options[select.selectedIndex];
+    const amount = selectedOption.getAttribute('data-amount');
+    document.getElementById('reward-amount').value = amount;
+}
+</script>
