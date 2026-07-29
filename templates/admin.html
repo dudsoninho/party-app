@@ -9,7 +9,7 @@
 <body class="bg-light">
     <div class="container my-4">
         
-        <!-- NAGŁÓWEK I POWROT -->
+        <!-- NAGłÓWEK I POWRÓT -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>⚙️ Panel Administratora</h2>
             <a href="{{ url_for('main.index') }}" class="btn btn-outline-primary"><i class="fa-solid fa-arrow-left me-2"></i>Powrót do aplikacji</a>
@@ -21,64 +21,145 @@
                 {% for category, message in messages %}
                     <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
                         {{ message }}
-                        <button type="Tak, to jest fragment kodu Twojego szablonu w formacie Jinja2/HTML (`templates/admin.html`), choć wygląda na to, że przy wklejaniu mogła uciec część znaczników HTML (widoczne są tagi logiki jak `{% ... %}` oraz zmienne `{{ ... }}`, ale brakuje struktury znaczników takich jak `<div>`, `<h2>` itp.).
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
 
-Możesz wkleić ten blok z szybkimi nagrodami (ten ze skryptem JavaScript) bezpośrednio **przed sekcją zarządzania użytkownikami** (`👥 Zarządzanie Użytkownikami`) lub na sam koniec pliku. 
-
-Oto jak możesz bezpiecznie umieścić sekcję szybkich nagród w swoim pliku `admin.html`:
-
-```html
-<!-- Sekcja Szybkich Nagród Agendowych -->
-<div class="card card-custom p-4 mb-4">
-    <h4 class="fw-bold mb-3"><i class="fa-solid fa-bolt text-warning me-2"></i>Szybkie Nagrody Agendowe</h4>
-    <form action="{{ url_for('admin.quick_reward') }}" method="POST">
-        <div class="row g-3">
-            <div class="col-md-4">
-                <label class="form-label">Wybierz Gracza:</label>
-                <select name="user_id" class="form-select" required>
-                    <option value="">-- Wybierz uczestnika --</option>
-                    {% for u in users %}
-                    <option value="{{ u.id }}">{{ u.username }} (ID: {{ u.user_code }})</option>
+        <!-- ONLINE USERS -->
+        <div class="card shadow-sm p-3 mb-4">
+            <h5 class="fw-bold"><i class="fa-solid fa-users text-success me-2"></i>Zalogowani Użytkownicy Online (ostatnie 5 min)</h5>
+            <p class="text-muted mb-2">Liczba: <strong>{{ online_users|length if online_users else 0 }}</strong></p>
+            {% if online_users %}
+                <div class="d-flex flex-wrap gap-2">
+                    {% for u in online_users %}
+                        <span class="badge bg-success p-2">{{ u.username }} (ID: {{ u.user_code }})</span>
                     {% endfor %}
-                </select>
-            </div>
-            <div class="col-md-4">
-                <label class="form-label">Wybierz Nagrodę / Akcję:</label>
-                <select name="title" id="reward-preset" class="form-select" onchange="updateRewardAmount(this)" required>
-                    <option value="" data-amount="0">-- Wybierz osiągnięcie --</option>
-                    <optgroup label="Kahoot">
-                        <option value="Kahoot: 1. miejsce" data-amount="150">Kahoot: 1. miejsce (+150 MC)</option>
-                        <option value="Kahoot: 2. miejsce" data-amount="100">Kahoot: 2. miejsce (+100 MC)</option>
-                        <option value="Kahoot: 3. miejsce" data-amount="50">Kahoot: 3. miejsce (+50 MC)</option>
-                        <option value="Kahoot: Udział" data-amount="20">Kahoot: Udział (+20 MC)</option>
-                    </optgroup>
-                    <optgroup label="Siatkówka">
-                        <option value="Siatkówka: Wygrani" data-amount="50">Siatkówka: Wygrani (+50 MC)</option>
-                        <option value="Siatkówka: MVP" data-amount="30">Siatkówka: MVP (+30 MC)</option>
-                    </optgroup>
-                    <optgroup label="Odznaki / Parkiet">
-                        <option value="Odznaka: Pustynny Jastrząb" data-amount="30">Pustynny Jastrząb (+30 MC)</option>
-                        <option value="Odznaka: Sommelier" data-amount="20">Sommelier (+20 MC)</option>
-                        <option value="Odznaka: Parkietowy Banger" data-amount="30">Parkietowy Banger (+30 MC)</option>
-                        <option value="Odznaka: Król Parkietu" data-amount="50">Król Parkietu (+50 MC)</option>
-                    </optgroup>
-                </select>
-            </div>
-            <div class="col-md-3">
-                <label class="form-label">Kwota (MC):</label>
-                <input type="number" id="reward-amount" name="amount" class="form-control" placeholder="MC" required>
-            </div>
-            <div class="col-md-1 d-flex align-items-end">
-                <button type="submit" class="btn btn-success w-100 fw-bold" title="Przyznaj"><i class="fa-solid fa-check"></i></button>
+                </div>
+            {% else %}
+                <span class="text-muted">Brak aktywnych użytkowników online.</span>
+            {% endif %}
+        </div>
+
+        <!-- SEKCJA SZYBKICH NAGRÓD AGENDOWYCH -->
+        <div class="card shadow-sm p-4 mb-4">
+            <h4 class="fw-bold mb-3"><i class="fa-solid fa-bolt text-warning me-2"></i>Szybkie Nagrody Agendowe</h4>
+            <form action="{{ url_for('admin.quick_reward') }}" method="POST">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Wybierz Gracza:</label>
+                        <select name="user_id" class="form-select" required>
+                            <option value="">-- Wybierz uczestnika --</option>
+                            {% for u in users %}
+                            <option value="{{ u.id }}">{{ u.username }} (ID: {{ u.user_code }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Wybierz Nagrodę / Akcję:</label>
+                        <select name="title" id="reward-preset" class="form-select" onchange="updateRewardAmount(this)" required>
+                            <option value="" data-amount="0">-- Wybierz osiągnięcie --</option>
+                            <optgroup label="Kahoot">
+                                <option value="Kahoot: 1. miejsce" data-amount="150">Kahoot: 1. miejsce (+150 MC)</option>
+                                <option value="Kahoot: 2. miejsce" data-amount="100">Kahoot: 2. miejsce (+100 MC)</option>
+                                <option value="Kahoot: 3. miejsce" data-amount="50">Kahoot: 3. miejsce (+50 MC)</option>
+                                <option value="Kahoot: Udział" data-amount="20">Kahoot: Udział (+20 MC)</option>
+                            </optgroup>
+                            <optgroup label="Siatkówka">
+                                <option value="Siatkówka: Wygrani" data-amount="50">Siatkówka: Wygrani (+50 MC)</option>
+                                <option value="Siatkówka: MVP" data-amount="30">Siatkówka: MVP (+30 MC)</option>
+                            </optgroup>
+                            <optgroup label="Odznaki / Parkiet">
+                                <option value="Odznaka: Pustynny Jastrząb" data-amount="30">Pustynny Jastrząb (+30 MC)</option>
+                                <option value="Odznaka: Sommelier" data-amount="20">Sommelier (+20 MC)</option>
+                                <option value="Odznaka: Parkietowy Banger" data-amount="30">Parkietowy Banger (+30 MC)</option>
+                                <option value="Odznaka: Król Parkietu" data-amount="50">Król Parkietu (+50 MC)</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Kwota (MC):</label>
+                        <input type="number" id="reward-amount" name="amount" class="form-control" placeholder="MC" required>
+                    </div>
+                    <div class="col-md-1 d-flex align-items-end">
+                        <button type="submit" class="btn btn-success w-100 fw-bold" title="Przyznaj"><i class="fa-solid fa-check"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- ZARZĄDZANIE UŻYTKOWNIKAMI -->
+        <div class="card shadow-sm p-4 mb-4">
+            <h4 class="fw-bold mb-3"><i class="fa-solid fa-user-gear text-primary me-2"></i>Zarządzanie Użytkownikami</h4>
+            <div class="table-responsive">
+                <table class="table table-striped align-middle">
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>ID</th>
+                            <th>Nick</th>
+                            <th>Saldo (MC)</th>
+                            <th>Akcje</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for u in users %}
+                        <tr>
+                            <td>
+                                {% if u in online_users %} 🟢 Online {% else %} ⚪ Offline {% endif %}
+                            </td>
+                            <td><code>{{ u.user_code }}</code></td>
+                            <td><strong>{{ u.username }}</strong> {% if u.is_admin %}<span class="badge bg-danger">Admin</span>{% endif %}</td>
+                            <td>
+                                <form action="{{ url_for('admin.set_balance', user_id=u.id) }}" method="POST" class="d-inline-flex">
+                                    <input type="number" name="balance" value="{{ u.balance }}" class="form-control form-control-sm me-1" style="width: 80px;" required>
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary" title="Zmień saldo">💾</button>
+                                </form>
+                            </td>
+                            <td>
+                                {% if not u.is_admin %}
+                                <form action="{{ url_for('admin.delete_user', user_id=u.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Na pewno usunąć użytkownika?');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Usuń użytkownika"><i class="fa-solid fa-trash"></i></button>
+                                </form>
+                                {% else %}
+                                —
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted">Brak zarejestrowanych użytkowników.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
-    </form>
-</div>
 
-<script>
-function updateRewardAmount(select) {
-    const selectedOption = select.options[select.selectedIndex];
-    const amount = selectedOption.getAttribute('data-amount');
-    document.getElementById('reward-amount').value = amount;
-}
-</script>
+        <!-- RESET STANU GRY -->
+        <div class="card shadow-sm p-4">
+            <h4 class="fw-bold mb-3 text-danger"><i class="fa-solid fa-triangle-exclamation me-2"></i>Reset Stanu Gry</h4>
+            <p class="text-muted">Ustaw startowe saldo wszystkim graczom jednocześnie.</p>
+            <form action="{{ url_for('admin.reset_all') }}" method="POST" class="row g-3" onsubmit="return confirm('Czy na pewno chcesz zresetować salda WSZYSTKICH graczy?');">
+                <div class="col-md-3">
+                    <input type="number" name="amount" value="100" class="form-control" required>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-danger w-100">Resetuj salda wszystkich</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    function updateRewardAmount(select) {
+        const selectedOption = select.options[select.selectedIndex];
+        const amount = selectedOption.getAttribute('data-amount');
+        document.getElementById('reward-amount').value = amount;
+    }
+    </script>
+</body>
+</html>
