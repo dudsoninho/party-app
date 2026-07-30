@@ -231,4 +231,5 @@
         }, 15000);
     });
 </script>
+<script> // Automatyczne odświeżanie strony co 15 sekund setInterval(function() { const activeElement = document.activeElement; const isTyping = activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA' || activeElement.tagName === 'SELECT'); const isModalOpen = document.querySelector('.modal.show') !== null; // Odśwież tylko wtedy, gdy użytkownik nie pisze i nie ma otwartego okienka if (!isTyping && !isModalOpen) { window.location.reload(); } }, 15000); </script>
 {% endblock %}
