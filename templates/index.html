@@ -1,116 +1,205 @@
-MotylCoin App
-Cześć, {{ user.username }}! (ID: {{ user.user_code }})
-{% if user.is_admin %}
+{% extends "base.html" %}
 
-{% endif %}
-{% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category, message in messages %}
-{{ message }}
+{% block title %}Motyl Coin — 27. Urodziny Magdy{% endblock %}
 
-{% endfor %} {% endif %} {% endwith %}
-Twoje Saldo
-{{ user.balance }} MC
-Koło Fortuny
-Zakręć kołem i zgarnij darmowe monety! (Cooldown: 30 min)
+{% block content %}
+<div class="container py-3" style="max-width: 800px;">
 
+    <!-- Nagłówek i powitanie -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="handwritten display-5 mb-0" style="color: var(--motyl-copper);">MotylCoin App</h1>
+            <p class="text-muted mb-0">Cześć, <strong>{{ user.username }}</strong>! (ID: <code>{{ user.user_code }}</code>)</p>
+        </div>
+        {% if user.is_admin %}
+            <a href="/admin" class="btn btn-sm btn-outline-danger rounded-pill">
+                <i class="fa-solid fa-user-shield me-1"></i> Admin Panel
+            </a>
+        {% endif %}
+    </div>
 
-Szybki Przelew P2P
-Odbiorca (Kod ID lub Nick):
+    <!-- Saldo -->
+    <div class="card glass-card p-4 text-center mb-4">
+        <span class="text-uppercase tracking-wider text-muted fw-bold small">Twoje Saldo</span>
+        <h2 class="display-3 handwritten fw-bold my-1" style="color: var(--motyl-copper);">{{ user.balance }} MC</h2>
+    </div>
 
-Kwota (MC):
+    <!-- Koło Fortuny -->
+    <div class="card glass-card p-3 mb-4 text-center">
+        <h3 class="handwritten fs-2 mb-1">🎡 Koło Fortuny</h3>
+        <p class="text-muted small mb-2">Zakręć kołem i zgarnij darmowe monety! (Cooldown: 30 min)</p>
+        <a href="/spin" class="btn btn-pastel-yellow rounded-pill px-4">Zakręć kołem</a>
+    </div>
 
-Tytuł przelewu:
-Przelew P2P
-Twój Kod QR
-Pokaż go innym, aby mogli szybko przesłać Ci Motyl Coiny
-
-TOP 5 Najbogatszych Imprezowiczów
-	•	{% for top_user in leaderboard %} #{{ loop.index }} {{ top_user.username }}  {{ top_user.balance }} MC {% endfor %}
-Pojedynki P2P (Kamień, Papier, Nożyce)
-                                Otwarty dla każdego
-                                {% for u in all_users %}
-                                {{ u.username }}
-                                {% endfor %}
-                            
-
-
-Otwarte Wyzwania:
-{% if bets %} {% for bet in bets %}
-{{ bet.title }}
-Stawka: {{ bet.amount }} MC
-{% if bet.creator_id != user.id %} {% else %}
-Oczekiwanie...
-{% endif %} {% endfor %} {% else %}
-Brak aktywnych pojedynków. Bądź pierwszy!
-{% endif %}
-Sklep Imprezowy
-{% for item in shop_items %}
-{{ item.name }}
-{{ item.description }}
-
-{% else %}
-Sklep jest obecnie pusty.
-{% endfor %}
-Ostatnie Transakcje
-	•	{% for tx in history %} {% if tx.sender_id == user.id %} Wydatek Wysłałeś do {{ tx.receiver.username }} {% else %} Otrzymane Od {{ tx.sender.username }} {% endif %} {{ tx.title }}  {% if tx.sender_id == user.id %}-{% else %}+{% endif %}{{ tx.amount }} MC  {% else %} Brak zarejestrowanych transakcji. {% endfor %}
-
-<!-- POP-UP POWITALNY: 27. URODZINY MAGDY & REGULAMIN -->
-<div class="modal fade" id="welcomeModal" tabindex="-1" aria-labelledby="welcomeModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content glass-card border-0 rounded-4 shadow-lg overflow-hidden">
-            
-            <div class="modal-header border-0 text-center flex-column pb-0 pt-4" style="background: linear-gradient(135deg, #FFC6FF 0%, #FFADAD 100%);">
-                <button type="button" class="btn-close align-self-end me-2 mt-1" data-bs-dismiss="modal" aria-label="Zamknij"></button>
-                <div class="mb-2 fs-1">🦋🎂</div>
-                <h2 class="modal-title handwritten fs-1 fw-bold mb-1" id="welcomeModalLabel" style="color: var(--motyl-copper);">
-                    Witaj na 27. Urodzinach Magdy!
-                </h2>
-                <p class="badge bg-white text-dark rounded-pill px-3 py-1.5 fw-normal mb-3 shadow-sm border border-warning">
-                    ✨ MotylCoin Party Edition ✨
-                </p>
+    <!-- Szybki Przelew P2P -->
+    <div class="card glass-card p-4 mb-4">
+        <h3 class="handwritten fs-2 mb-3"><i class="fa-solid fa-paper-plane me-2"></i>Szybki Przelew P2P</h3>
+        <form method="POST" action="/transfer">
+            <div class="mb-3">
+                <label class="form-label small fw-semibold">Odbiorca (Kod ID lub Nick):</label>
+                <input type="text" name="receiver" class="form-control" placeholder="np. @magda lub 12" required>
             </div>
+            <div class="mb-3">
+                <label class="form-label small fw-semibold">Kwota (MC):</label>
+                <input type="number" name="amount" class="form-control" min="1" placeholder="10" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label small fw-semibold">Tytuł przelewu:</label>
+                <input type="text" name="title" class="form-control" placeholder="Za drinka / prezent">
+            </div>
+            <button type="submit" class="btn btn-motyl-primary w-100 py-2">Wyślij Przelew</button>
+        </form>
+    </div>
 
-            <div class="modal-body p-4 fs-6">
-                <p class="text-center fw-semibold mb-3" style="color: #5C4D00;">
-                    Życzymy Ci niezapomnianej zabawy! Zapoznaj się z zasadami gry:
-                </p>
+    <!-- Kod QR -->
+    <div class="card glass-card p-4 mb-4 text-center">
+        <h3 class="handwritten fs-2 mb-2"><i class="fa-solid fa-qrcode me-2"></i>Twój Kod QR</h3>
+        <p class="text-muted small mb-3">Pokaż go innym, aby mogli szybko przesłać Ci Motyl Coiny</p>
+        <div class="bg-white p-3 d-inline-block rounded-3 border">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ user.user_code }}" alt="QR Code" class="img-fluid">
+        </div>
+    </div>
 
-                <div class="list-group list-group-flush rounded-3 border-0">
-                    <div class="list-group-item bg-transparent border-0 d-flex align-items-start px-0 py-2">
-                        <span class="fs-4 me-3">💰</span>
+    <!-- TOP 5 Leaderboard -->
+    <div class="card glass-card p-4 mb-4">
+        <h3 class="handwritten fs-2 mb-3">🏆 TOP 5 Najbogatszych Imprezowiczów</h3>
+        <ul class="list-group list-group-flush bg-transparent">
+            {% for top_user in leaderboard %}
+                <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center border-bottom">
+                    <span><strong>#{{ loop.index }}</strong> {{ top_user.username }}</span>
+                    <span class="badge badge-pastel">{{ top_user.balance }} MC</span>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Pojedynki P2P -->
+    <div class="card glass-card p-4 mb-4">
+        <h3 class="handwritten fs-2 mb-3">⚔️ Pojedynki P2P (Kamień, Papier, Nożyce)</h3>
+        <form method="POST" action="/create_bet" class="mb-3">
+            <div class="row g-2">
+                <div class="col-md-6">
+                    <input type="number" name="amount" class="form-control" placeholder="Stawka MC" required>
+                </div>
+                <div class="col-md-6">
+                    <button type="submit" class="btn btn-pastel-pink w-100">Stwórz Wyzwanie</button>
+                </div>
+            </div>
+        </form>
+
+        <h5 class="fw-semibold mt-3 mb-2">Otwarte Wyzwania:</h5>
+        {% if bets %}
+            <div class="list-group">
+                {% for bet in bets %}
+                    <div class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
                         <div>
-                            <strong>100 MC na Start:</strong> Każdy dostaje pakiet powitalny 100 Motyl Coinów.
+                            <strong>{{ bet.title }}</strong><br>
+                            <small class="text-muted">Stawka: {{ bet.amount }} MC</small>
                         </div>
+                        {% if bet.creator_id != user.id %}
+                            <a href="/accept_bet/{{ bet.id }}" class="btn btn-sm btn-success rounded-pill">Dołącz</a>
+                        {% else %}
+                            <span class="badge bg-secondary">Oczekiwanie...</span>
+                        {% endif %}
                     </div>
-                    <div class="list-group-item bg-transparent border-0 d-flex align-items-start px-0 py-2">
-                        <span class="fs-4 me-3">📲</span>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted small mb-0">Brak aktywnych pojedynków. Bądź pierwszy!</p>
+        {% endif %}
+    </div>
+
+    <!-- Sklep Imprezowy -->
+    <div class="card glass-card p-4 mb-4">
+        <h3 class="handwritten fs-2 mb-3">🛍️ Sklep Imprezowy</h3>
+        <div class="row g-3">
+            {% for item in shop_items %}
+                <div class="col-md-6">
+                    <div class="p-3 border rounded-3 bg-white h-100 d-flex flex-column justify-content-between">
                         <div>
-                            <strong>Przelewy P2P & QR:</strong> Przesyłaj monety znajomym, stawiaj drinki i płac za pomocą kodu QR lub nicku.
+                            <h5 class="fw-bold mb-1">{{ item.name }}</h5>
+                            <p class="text-muted small mb-2">{{ item.description }}</p>
                         </div>
-                    </div>
-                    <div class="list-group-item bg-transparent border-0 d-flex align-items-start px-0 py-2">
-                        <span class="fs-4 me-3">🍹</span>
-                        <div>
-                            <strong>Sklep Imprezowy:</strong> Wymieniaj uzbierane MC na piosenki u DJ-a, potrawy z grilla i przywileje!
-                        </div>
-                    </div>
-                    <div class="list-group-item bg-transparent border-0 d-flex align-items-start px-0 py-2">
-                        <span class="fs-4 me-3">🎡</span>
-                        <div>
-                            <strong>Koło Fortuny & Pojedynki:</strong> Kręć kołem co 30 minut i rzucaj wyzwania innym w pojedynkach!
-                        </div>
-                    </div>
-                    <div class="list-group-item bg-transparent border-0 d-flex align-items-start px-0 py-2">
-                        <span class="fs-4 me-3">🥂</span>
-                        <div>
-                            <strong>Świetna Zabawa:</strong> Celebrujemy urodziny Magdy na 100% do białego rana!
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <span class="fw-bold text-success">{{ item.price }} MC</span>
+                            <a href="/buy/{{ item.id }}" class="btn btn-sm btn-motyl-primary">Kup</a>
                         </div>
                     </div>
                 </div>
+            {% else %}
+                <p class="text-muted small mb-0">Sklep jest obecnie pusty.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Ostatnie Transakcje -->
+    <div class="card glass-card p-4 mb-4">
+        <h3 class="handwritten fs-2 mb-3">📜 Ostatnie Transakcje</h3>
+        <ul class="list-group list-group-flush bg-transparent">
+            {% for tx in history %}
+                <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center px-0">
+                    <div>
+                        {% if tx.sender_id == user.id %}
+                            <span class="badge bg-danger me-1">Wydatek</span> Wysłałeś do <strong>{{ tx.receiver.username }}</strong>
+                        {% else %}
+                            <span class="badge bg-success me-1">Otrzymane</span> Od <strong>{{ tx.sender.username }}</strong>
+                        {% endif %}
+                        <div class="small text-muted">{{ tx.title }}</div>
+                    </div>
+                    <span class="fw-bold {% if tx.sender_id == user.id %}text-danger{% else %}text-success{% endif %}">
+                        {% if tx.sender_id == user.id %}-{% else %}+{% endif %}{{ tx.amount }} MC
+                    </span>
+                </li>
+            {% else %}
+                <li class="list-group-item bg-transparent text-muted small px-0">Brak zarejestrowanych transakcji.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+</div>
+
+<!-- MODAL POWITALNY -->
+<div class="modal fade" id="welcomeModal" tabindex="-1" aria-labelledby="welcomeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content glass-card border-0 rounded-4 shadow-lg overflow-hidden" style="background: #FFFDF9;">
+            
+            <!-- Nagłówek -->
+            <div class="modal-header border-0 text-center flex-column pb-2 pt-4" style="background: linear-gradient(135deg, #FFC6FF 0%, #FFADAD 100%);">
+                <button type="button" class="btn-close align-self-end me-2 mt-1" data-bs-dismiss="modal" aria-label="Zamknij"></button>
+                <h1 class="handwritten display-5 fw-bold mb-0" id="welcomeModalLabel" style="color: var(--motyl-copper); font-family: 'Caveat', cursive;">
+                    🦋 27. Urodziny Magdy 🎂
+                </h1>
+                <p class="handwritten fs-3 text-dark mb-0" style="font-family: 'Caveat', cursive;">
+                    Witaj w grze MotylCoin!
+                </p>
             </div>
 
+            <!-- Treść -->
+            <div class="modal-body p-4 text-center">
+                <p class="handwritten fs-3 mb-3" style="font-family: 'Caveat', cursive; color: #8A3B27;">
+                    Wszystkiego najlepszego dla Magdy & udanej zabawy dla Was!
+                </p>
+
+                <div class="p-3 rounded-4 mb-3 text-start" style="background: #FDF6EE; border: 2px dashed #E2B081;">
+                    <h5 class="handwritten fs-2 fw-bold text-center mb-2" style="font-family: 'Caveat', cursive; color: var(--motyl-copper);">Szybki Skrót Zasad:</h5>
+                    <ul class="list-unstyled mb-0 fs-6" style="line-height: 1.8;">
+                        <li>💰 <strong>100 MC</strong> na start w Twoim portfelu!</li>
+                        <li>🍹 <strong>Kupuj drinki</strong> i piosenki w Sklepie.</li>
+                        <li>📲 <strong>Przelewaj MC</strong> znajomym przez QR lub Nick.</li>
+                        <li>🎡 <strong>Kręć kołem</strong> fortuny co 30 minut.</li>
+                    </ul>
+                </div>
+
+                <!-- Grafika favicon na dole -->
+                <div class="my-3 text-center">
+                    <img src="{{ url_for('static', filename='favicon.png') }}" alt="MotylCoin Logo" style="width: 55px; height: auto;" class="img-fluid drop-shadow">
+                </div>
+            </div>
+
+            <!-- Przycisk zamykający -->
             <div class="modal-footer border-0 p-3 pt-0 justify-content-center">
                 <button type="button" class="btn btn-motyl-primary w-100 py-2.5 rounded-3 fw-bold fs-5 shadow" data-bs-dismiss="modal">
-                    <i class="fa-solid fa-champagne-glasses me-2"></i> Wchodzę do gry!
+                    <i class="fa-solid fa-champagne-glasses me-2"></i> Dołącz do zabawy!
                 </button>
             </div>
 
@@ -120,10 +209,26 @@ Ostatnie Transakcje
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        // Pokazuj okienko powitalne przy pierwszym wejściu
         if (!localStorage.getItem("motyl_welcome_27_seen")) {
-            var welcomeModal = new bootstrap.Modal(document.getElementById('welcomeModal'));
-            welcomeModal.show();
-            localStorage.setItem("motyl_welcome_27_seen", "true");
+            var welcomeModalElement = document.getElementById('welcomeModal');
+            if (welcomeModalElement) {
+                var welcomeModal = new bootstrap.Modal(welcomeModalElement);
+                welcomeModal.show();
+                localStorage.setItem("motyl_welcome_27_seen", "true");
+            }
         }
+
+        // Auto-refresh co 15 sekund (wstrzymany gdy piszesz lub otwarty modal)
+        setInterval(function() {
+            const activeElement = document.activeElement;
+            const isTyping = activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA' || activeElement.tagName === 'SELECT');
+            const isModalOpen = document.querySelector('.modal.show') !== null;
+
+            if (!isTyping && !isModalOpen) {
+                window.location.reload();
+            }
+        }, 15000);
     });
 </script>
+{% endblock %}
