@@ -13,12 +13,109 @@
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Stylizacja globalna -->
+    <!-- Dedykowana Paleta Motyl B-Day Party -->
     <style>
+        :root {
+            /* Tła i teksty */
+            --motyl-bg: #F8F7FA;
+            --motyl-text: #534E4C;
+            --motyl-border-gold: #C2AF7D;
+            
+            /* Główne kolory marki */
+            --motyl-copper: #A24731;
+            --motyl-lavender: #9F8CBE;
+            
+            /* Akcenty drinkowe */
+            --motyl-aperol: #F09228;
+            --motyl-hugo: #598E4E;
+            --motyl-cuba: #832F26;
+            --motyl-blue: #5C94C7;
+            --motyl-yellow: #FDC010;
+            --motyl-sage: #839977;
+        }
+
         body {
-            background-color: #f4f6f9;
+            background-color: var(--motyl-bg);
+            color: var(--motyl-text);
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             min-height: 100vh;
+        }
+
+        /* Stylizacja Nagłówków */
+        h1, h2, h3, .brand-title {
+            color: var(--motyl-copper);
+            font-weight: 700;
+        }
+
+        .sub-header {
+            color: var(--motyl-lavender);
+        }
+
+        /* Dopasowanie Kart (Cards) */
+        .card {
+            border: 1px solid var(--motyl-border-gold);
+            border-radius: 12px;
+            background-color: #FFFFFF;
+            box-shadow: 0 4px 12px rgba(83, 78, 76, 0.05);
+        }
+
+        .card-header {
+            background-color: #FFFFFF;
+            border-bottom: 1px solid rgba(194, 175, 125, 0.3);
+            font-weight: 600;
+        }
+
+        /* Przyciski dopasowane do palety */
+        .btn-motyl-primary {
+            background-color: var(--motyl-copper);
+            color: #fff;
+            border: none;
+        }
+        .btn-motyl-primary:hover {
+            background-color: #883926;
+            color: #fff;
+        }
+
+        .btn-motyl-aperol {
+            background-color: var(--motyl-aperol);
+            color: #fff;
+            border: none;
+        }
+        .btn-motyl-aperol:hover {
+            background-color: #d87e1a;
+            color: #fff;
+        }
+
+        .btn-motyl-hugo {
+            background-color: var(--motyl-hugo);
+            color: #fff;
+            border: none;
+        }
+        .btn-motyl-hugo:hover {
+            background-color: #46723d;
+            color: #fff;
+        }
+
+        /* Stylizacja komunikatów alert */
+        .alert-success {
+            background-color: #EBF5E9;
+            border-color: var(--motyl-hugo);
+            color: var(--motyl-hugo);
+        }
+        .alert-danger {
+            background-color: #FDF0ED;
+            border-color: var(--motyl-cuba);
+            color: var(--motyl-cuba);
+        }
+        .alert-warning {
+            background-color: #FEF8E7;
+            border-color: var(--motyl-yellow);
+            color: #926C00;
+        }
+        .alert-info {
+            background-color: #EEF5FC;
+            border-color: var(--motyl-blue);
+            color: var(--motyl-blue);
         }
     </style>
 </head>
