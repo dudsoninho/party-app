@@ -390,3 +390,84 @@ def claim_quest(quest_id):
         db.session.add(sub)
         db.session.commit()
         return {'success': True, 'mode': 'manual'}
+
+    @main.route('/create_task', methods=['POST'])
+def create_task():
+    if 'user_id' not in session:
+        return redirect(url_for('main.login'))
+    
+    user = User.query.get(session['user_id'])
+    title = request.form.get('title')
+    reward = int(request.form.get('reward', 0))
+
+    if reward <= 0:
+        flash('Nagroda musi być większa niż 0 MC!', 'danger')
+        return redirect(url_for('main.index'))
+
+    if user.balance < reward:
+        flash('Nie masz wystarczającej liczby monet, aby opłacić depozyt tego zlecenia!', 'danger')
+        return redirect(url_for('main.index'))
+
+    # Pobieramy depozyt z konta twórcy
+    user.balance -= reward
+    
+    new_task = P2PTask(
+        creator_id=user.id,
+        title=title,
+        reward=reward,
+        status='open'
+    )
+    db.session.add(new_task)
+    db.session.commit()
+
+    flash('Twoje skrzydlate zlecenie trafiło na giełdę!', 'success')
+    return redirect(url_for('main.index'))
+
+@main.route('/take_task/<int:task_id>', methods=['GET'])
+def take_task(task_id):
+    if 'user_id' not in session:
+        return redirect(url_for('main.login'))
+    
+    user = User.query.get(session['user_id'])
+    task = P2PTask.query.get_or_404(task_id)
+
+    if task.status != 'open':
+        flash('To zlecenie jest już niedostępne.', 'warning')
+        return redirect(url_for('main.index'))
+
+    if task.creator_id == user.id:
+        flash('Nie możesz wykonać własnego zlecenia!', 'danger')
+        return redirect(url_for('main.index'))
+
+    task.worker_id = user.id
+    task.status = 'in_progress'
+    db.session.commit()
+
+    flash('Podjąłeś się zlecenia! Ruszaj do działania.', 'success')
+    return redirect(url_for('main.index'))
+
+@main.route('/complete_task/<int:task_id>', methods=['GET'])
+def complete_task(task_id):
+    if 'user_id' not in session:
+        return redirect(url_for('main.login'))
+    
+    user = User.query.get(session['user_id'])
+    task = P2PTask.query.get_or_404(task_id)
+
+    # Tylko twórca zlecenia może zatwierdzić wykonanie i przekazać nagrodę
+    if task.creator_id != user.id:
+        flash('Tylko zleceniodawca może zatwierdzić wykonanie!', 'danger')
+        return redirect(url_for('main.index'))
+
+    if task.status != 'in_progress' or not task.worker_id:
+        flash('Zlecenie nie jest w trakcie realizacji.', 'danger')
+        return redirect(url_for('main.index'))
+
+    worker = User.query.get(task.worker_id)
+    if worker:
+        worker.balance += task.reward
+        task.status = 'completed'
+        db.session.commit()
+        flash(f'Zlecenie zatwierdzone! Przelano {task.reward} MC dla {worker.username}.', 'success')
+    
+    return redirect(url_for('main.index'))

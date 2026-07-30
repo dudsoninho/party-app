@@ -336,3 +336,52 @@
     });
 </script>
 {% endblock %}
+
+<!-- Giełda Skrzydlatych Zleceń (GUP) -->
+    <div class="card glass-card p-4 mb-4">
+        <h3 class="handwritten fs-2 mb-3">🦋 Giełda Skrzydlatych Zleceń (GUP)</h3>
+        
+        <!-- Formularz dodawania zlecenia -->
+        <form method="POST" action="/create_task" class="mb-4 p-3 rounded-3" style="background: rgba(255,255,255,0.6); border: 1px dashed #E2B081;">
+            <h6 class="fw-semibold mb-2" style="color: var(--motyl-copper);">Dodaj nowe mikro-zlecenie:</h6>
+            <div class="mb-2">
+                <input type="text" name="title" class="form-control form-control-sm" placeholder="np. Przynieś mi drinka z baru / Podaj chusteczkę" required>
+            </div>
+            <div class="row g-2">
+                <div class="col-8">
+                    <input type="number" name="reward" class="form-control form-control-sm" min="1" placeholder="Nagroda w MC (depozyt)" required>
+                </div>
+                <div class="col-4">
+                    <button type="submit" class="btn btn-motyl-primary btn-sm w-100">Opublikuj</button>
+                </div>
+            </div>
+        </form>
+
+        <h5 class="fw-semibold mb-2">Aktywne Zlecenie na Imprezie:</h5>
+        {% if tasks %}
+            <div class="list-group">
+                {% for task in tasks if task.status != 'completed' %}
+                    <div class="list-group-item bg-transparent d-flex justify-content-between align-items-center py-3">
+                        <div>
+                            <strong>{{ task.title }}</strong><br>
+                            <small class="text-muted">Zleceniodawca: <strong>{{ task.creator.username }}</strong> | Nagroda: <span class="text-success fw-bold">{{ task.reward }} MC</span></small>
+                            {% if task.worker %}
+                                <br><small class="text-primary">Wykonawca: <strong>{{ task.worker.username }}</strong></small>
+                            {% endif %}
+                        </div>
+                        <div>
+                            {% if task.status == 'open' and task.creator_id != user.id %}
+                                <a href="/take_task/{{ task.id }}" class="btn btn-sm btn-pastel-cyan rounded-pill">Podejmij się</a>
+                            {% elif task.status == 'in_progress' and task.creator_id == user.id %}
+                                <a href="/complete_task/{{ task.id }}" class="btn btn-sm btn-success rounded-pill">Zatwierdź & Płać</a>
+                            {% elif task.status == 'in_progress' %}
+                                <span class="badge bg-warning text-dark">W realizacji...</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted small mb-0">Brak aktywnych zleceń. Bądź pierwszy i zgłoś zadanie!</p>
+        {% endif %}
+    </div>

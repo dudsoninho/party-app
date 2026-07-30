@@ -70,3 +70,14 @@ def init_db(app):
     db.init_app(app)
     with app.app_context():
         db.create_all()
+
+class P2PTask(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    creator_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    worker_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    title = db.Column(db.String(200), nullable=False)
+    reward = db.Column(db.Integer, nullable=False)
+    status = db.Column(db.String(20), default='open') # open, in_progress, completed, cancelled
+
+    creator = db.relationship('User', foreign_keys=[creator_id], backref='created_tasks')
+    worker = db.relationship('User', foreign_keys=[worker_id], backref='working_tasks')
