@@ -1,8 +1,10 @@
+import os
 import random
 import io
 import base64
 from datetime import datetime, timedelta
 import qrcode
+from werkzeug.utils import secure_filename
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash, jsonify, current_app
 from models import db, User, ShopItem, Transaction, Quest, QuestSubmission, Bet
 
@@ -85,6 +87,20 @@ def login():
             flash('Podaj nick i 4-cyfrowy PIN!', 'danger')
             return redirect(url_for('main.login'))
 
+        # Odbiór pliku zdjęcia / awatara
+        avatar_file = request.files.get('avatar')
+        avatar_filename = None
+
+        if avatar_file and avatar_file.filename != '':
+            ext = os.path.splitext(avatar_file.filename)[1].lower()
+            if ext in ['.jpg', '.jpeg', '.png', '.gif', '.webp']:
+                upload_folder = os.path.join(current_app.root_path, 'static', 'uploads')
+                os.makedirs(upload_folder, exist_ok=True)
+                
+                clean_username = secure_filename(username)
+                avatar_filename = f"{clean_username}_{datetime.utcnow().strftime('%Y%m%d%H%M%S')}{ext}"
+                avatar_file.save(os.path.join(upload_folder, avatar_filename))
+
         user = User.query.filter_by(username=username).first()
 
         if user:
@@ -96,6 +112,8 @@ def login():
                 user.pin = pin
                 user.is_admin = 1  # Wymuszenie nadania uprawnień w bazie
                 user.last_active = datetime.utcnow()
+                if avatar_filename and hasattr(user, 'avatar'):
+                    user.avatar = avatar_filename
                 db.session.commit()
                 session['user_id'] = user.id
                 flash('Pomyślnie zresetowano PIN i nadano uprawnienia administratora!', 'success')
@@ -105,6 +123,8 @@ def login():
             if user.pin == pin:
                 session['user_id'] = user.id
                 user.last_active = datetime.utcnow()
+                if avatar_filename and hasattr(user, 'avatar'):
+                    user.avatar = avatar_filename
                 db.session.commit()
                 return redirect(url_for('main.index'))
             else:
@@ -123,6 +143,9 @@ def login():
                 is_admin=is_admin_flag,
                 last_active=datetime.utcnow()
             )
+            if avatar_filename and hasattr(new_user, 'avatar'):
+                new_user.avatar = avatar_filename
+
             db.session.add(new_user)
             db.session.commit()
             

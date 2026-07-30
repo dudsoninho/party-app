@@ -1,32 +1,79 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="card" style="max-width: 360px; margin: 40px auto; text-align: center;">
-    <h2>Wejdź do gry</h2>
-    <p style="color: #a0a0b0; font-size: 0.9rem; margin-bottom: 20px;">Wpisz swój nick i ustal lub podaj 4-cyfrowy PIN.</p>
-    
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div style="padding: 10px; border-radius: 8px; margin-bottom: 15px; background: rgba(255,46,76,0.2); color: #ff2e4c; font-size: 13px;">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
+<style>
+    /* Pełnoekranowe tło ze zdjęciem */
+    body {
+        background: url("{{ url_for('static', filename='bg-login.png') }}") no-repeat center center fixed !important;
+        background-size: cover !important;
+    }
 
-    <form action="{{ url_for('main.login') }}" method="POST">
-        <div style="margin-bottom: 15px; text-align: left;">
-            <label for="username">Twój nick</label>
-            <input type="text" id="username" name="username" required placeholder="np. Ptychu" style="margin-top: 5px;">
-        </div>
+    /* Półprzezroczysta karta z efektem szkła (Glassmorphism) */
+    .glass-card {
+        background: rgba(255, 255, 255, 0.90);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 2px solid var(--motyl-border-gold);
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
+    }
+
+    .form-control:focus {
+        border-color: var(--motyl-copper);
+        box-shadow: 0 0 0 0.25rem rgba(162, 71, 49, 0.25);
+    }
+</style>
+
+<div class="container d-flex justify-content-center align-items-center min-vh-100 py-4">
+    <div class="card glass-card p-4 p-md-5 w-100" style="max-width: 440px;">
         
-        <div style="margin-bottom: 20px; text-align: left;">
-            <label for="pin">4-cyfrowy PIN</label>
-            <input type="password" id="pin" name="pin" maxlength="4" pattern="\d{4}" inputmode="numeric" required placeholder="****" style="margin-top: 5px; text-align: center; letter-spacing: 5px; font-size: 1.2rem;">
+        <div class="text-center mb-4">
+            <h2 class="mb-1" style="color: var(--motyl-copper);">Wejdź do gry</h2>
+            <p class="sub-header small mb-0">Wpisz swój nick, PIN i ustaw swój avatar</p>
         </div>
 
-        <button type="submit" class="btn btn-send" style="width: 100%; font-size: 1.1rem;">Graj!</button>
-    </form>
+        <!-- DODANO: enctype="multipart/form-data" dla obsługi plików -->
+        <form method="POST" enctype="multipart/form-data">
+            
+            <!-- POLE: NICK -->
+            <div class="mb-3">
+                <label for="nick" class="form-label fw-bold">Twój nick</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0">
+                        <i class="fa-solid fa-user" style="color: var(--motyl-copper);"></i>
+                    </span>
+                    <input type="text" class="form-control border-start-0 ps-0" id="nick" name="nick" placeholder="Wpisz swój nick..." required autofocus>
+                </div>
+            </div>
+
+            <!-- POLE: PIN -->
+            <div class="mb-3">
+                <label for="pin" class="form-label fw-bold">4-cyfrowy PIN</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0">
+                        <i class="fa-solid fa-key" style="color: var(--motyl-copper);"></i>
+                    </span>
+                    <input type="password" class="form-control border-start-0 ps-0" id="pin" name="pin" maxlength="4" pattern="[0-9]{4}" placeholder="np. 1234" required>
+                </div>
+            </div>
+
+            <!-- POLE: AVATAR (ZDJĘCIE) -->
+            <div class="mb-4">
+                <label for="avatar" class="form-label fw-bold">Zdjęcie profilowe <span class="fw-normal text-muted">(opcjonalnie)</span></label>
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0">
+                        <i class="fa-solid fa-camera" style="color: var(--motyl-copper);"></i>
+                    </span>
+                    <input type="file" class="form-control border-start-0 ps-0" id="avatar" name="avatar" accept="image/*">
+                </div>
+            </div>
+
+            <!-- PRZYCISK -->
+            <button type="submit" class="btn btn-motyl-primary w-100 py-2.5 fw-bold shadow-sm">
+                <i class="fa-solid fa-gamepad me-2"></i> Graj!
+            </button>
+        </form>
+
+    </div>
 </div>
 {% endblock %}
