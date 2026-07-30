@@ -5,17 +5,25 @@
 {% block content %}
 <div class="container py-3" style="max-width: 800px;">
 
-    <!-- Nagłówek i powitanie -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <!-- Pasek górny: Nagłówek, Nick, Regulamin i Wyloguj -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
         <div>
             <h1 class="handwritten display-5 mb-0" style="color: var(--motyl-copper);">MotylCoin App</h1>
             <p class="text-muted mb-0">Cześć, <strong>{{ user.username }}</strong>! (ID: <code>{{ user.user_code }}</code>)</p>
         </div>
-        {% if user.is_admin %}
-            <a href="/admin" class="btn btn-sm btn-outline-danger rounded-pill">
-                <i class="fa-solid fa-user-shield me-1"></i> Admin Panel
+        <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-sm btn-outline-secondary rounded-pill" data-bs-toggle="modal" data-bs-target="#welcomeModal">
+                📜 Regulamin
+            </button>
+            {% if user.is_admin %}
+                <a href="/admin" class="btn btn-sm btn-outline-danger rounded-pill">
+                    <i class="fa-solid fa-user-shield me-1"></i> Admin
+                </a>
+            {% endif %}
+            <a href="/logout" class="btn btn-sm btn-outline-dark rounded-pill">
+                <i class="fa-solid fa-right-from-bracket me-1"></i> Wyloguj
             </a>
-        {% endif %}
+        </div>
     </div>
 
     <!-- Saldo -->
@@ -24,11 +32,15 @@
         <h2 class="display-3 handwritten fw-bold my-1" style="color: var(--motyl-copper);">{{ user.balance }} MC</h2>
     </div>
 
-    <!-- Koło Fortuny -->
+    <!-- Koło Fortuny (Naprawione na metodę POST) -->
     <div class="card glass-card p-3 mb-4 text-center">
         <h3 class="handwritten fs-2 mb-1">🎡 Koło Fortuny</h3>
         <p class="text-muted small mb-2">Zakręć kołem i zgarnij darmowe monety! (Cooldown: 30 min)</p>
-        <a href="/spin" class="btn btn-pastel-yellow rounded-pill px-4">Zakręć kołem</a>
+        <form method="POST" action="/spin">
+            <button type="submit" class="btn btn-pastel-yellow rounded-pill px-4 border shadow-sm">
+                🎡 Zakręć kołem
+            </button>
+        </form>
     </div>
 
     <!-- Szybki Przelew P2P -->
@@ -37,7 +49,7 @@
         <form method="POST" action="/transfer">
             <div class="mb-3">
                 <label class="form-label small fw-semibold">Odbiorca (Kod ID lub Nick):</label>
-                <input type="text" name="receiver" class="form-control" placeholder="np. @magda lub 12" required>
+                <input type="text" name="receiver" class="form-control" placeholder="np. Psychu99 lub 14" required>
             </div>
             <div class="mb-3">
                 <label class="form-label small fw-semibold">Kwota (MC):</label>
@@ -73,15 +85,15 @@
         </ul>
     </div>
 
-    <!-- Pojedynki P2P -->
+    <!-- Pojedynki P2P (Ścieżka /create_duel) -->
     <div class="card glass-card p-4 mb-4">
         <h3 class="handwritten fs-2 mb-3">⚔️ Pojedynki P2P (Kamień, Papier, Nożyce)</h3>
-        <form method="POST" action="/create_bet" class="mb-3">
+        <form method="POST" action="/create_duel" class="mb-3">
             <div class="row g-2">
-                <div class="col-md-6">
+                <div class="col-md-8">
                     <input type="number" name="amount" class="form-control" placeholder="Stawka MC" required>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <button type="submit" class="btn btn-pastel-pink w-100">Stwórz Wyzwanie</button>
                 </div>
             </div>
@@ -93,11 +105,11 @@
                 {% for bet in bets %}
                     <div class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
                         <div>
-                            <strong>{{ bet.title }}</strong><br>
+                            <strong>{{ bet.title if bet.title else 'Pojedynek' }}</strong><br>
                             <small class="text-muted">Stawka: {{ bet.amount }} MC</small>
                         </div>
                         {% if bet.creator_id != user.id %}
-                            <a href="/accept_bet/{{ bet.id }}" class="btn btn-sm btn-success rounded-pill">Dołącz</a>
+                            <a href="/accept_duel/{{ bet.id }}" class="btn btn-sm btn-success rounded-pill">Dołącz</a>
                         {% else %}
                             <span class="badge bg-secondary">Oczekiwanie...</span>
                         {% endif %}
@@ -163,7 +175,6 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content glass-card border-0 rounded-4 shadow-lg overflow-hidden" style="background: #FFFDF9;">
             
-            <!-- Nagłówek -->
             <div class="modal-header border-0 text-center flex-column pb-2 pt-4" style="background: linear-gradient(135deg, #FFC6FF 0%, #FFADAD 100%);">
                 <button type="button" class="btn-close align-self-end me-2 mt-1" data-bs-dismiss="modal" aria-label="Zamknij"></button>
                 <h1 class="handwritten display-5 fw-bold mb-0" id="welcomeModalLabel" style="color: var(--motyl-copper); font-family: 'Caveat', cursive;">
@@ -174,7 +185,6 @@
                 </p>
             </div>
 
-            <!-- Treść -->
             <div class="modal-body p-4 text-center">
                 <p class="handwritten fs-3 mb-3" style="font-family: 'Caveat', cursive; color: #8A3B27;">
                     Wszystkiego najlepszego dla Magdy & udanej zabawy dla Was!
@@ -190,13 +200,11 @@
                     </ul>
                 </div>
 
-                <!-- Grafika favicon na dole -->
                 <div class="my-3 text-center">
                     <img src="{{ url_for('static', filename='favicon.png') }}" alt="MotylCoin Logo" style="width: 55px; height: auto;" class="img-fluid drop-shadow">
                 </div>
             </div>
 
-            <!-- Przycisk zamykający -->
             <div class="modal-footer border-0 p-3 pt-0 justify-content-center">
                 <button type="button" class="btn btn-motyl-primary w-100 py-2.5 rounded-3 fw-bold fs-5 shadow" data-bs-dismiss="modal">
                     <i class="fa-solid fa-champagne-glasses me-2"></i> Dołącz do zabawy!
@@ -209,7 +217,6 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Pokazuj okienko powitalne przy pierwszym wejściu
         if (!localStorage.getItem("motyl_welcome_27_seen")) {
             var welcomeModalElement = document.getElementById('welcomeModal');
             if (welcomeModalElement) {
@@ -219,7 +226,6 @@
             }
         }
 
-        // Auto-refresh co 15 sekund (wstrzymany gdy piszesz lub otwarty modal)
         setInterval(function() {
             const activeElement = document.activeElement;
             const isTyping = activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA' || activeElement.tagName === 'SELECT');
@@ -231,5 +237,4 @@
         }, 15000);
     });
 </script>
-<script> // Automatyczne odświeżanie strony co 15 sekund setInterval(function() { const activeElement = document.activeElement; const isTyping = activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA' || activeElement.tagName === 'SELECT'); const isModalOpen = document.querySelector('.modal.show') !== null; // Odśwież tylko wtedy, gdy użytkownik nie pisze i nie ma otwartego okienka if (!isTyping && !isModalOpen) { window.location.reload(); } }, 15000); </script>
 {% endblock %}
