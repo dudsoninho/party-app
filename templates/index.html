@@ -1,324 +1,129 @@
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MotylCoin - Gamification Platform</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body { background-color: #f4f6f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        .card-custom { border-radius: 15px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .balance-badge { font-size: 1.5rem; font-weight: bold; background: linear-gradient(45deg, #ff7e5f, #feb47b); color: white; padding: 10px 20px; border-radius: 30px; }
-        .spin-wheel-btn { background: linear-gradient(45deg, #11998e, #38ef7d); color: white; font-weight: bold; border: none; }
-        .spin-wheel-btn:hover { background: linear-gradient(45deg, #0e8379, #2edb70); color: white; }
-        .leaderboard-rank { font-weight: bold; width: 30px; }
-        .rank-1 { color: #ffd700; font-size: 1.2rem; }
-        .rank-2 { color: #c0c0c0; font-size: 1.1rem; }
-        .rank-3 { color: #cd7f32; font-size: 1.05rem; }
-    </style>
-</head>
-<body class="pb-5">
+MotylCoin App
+Cześć, {{ user.username }}! (ID: {{ user.user_code }})
+{% if user.is_admin %}
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-    <div class="container">
-        <a class="navbar-brand fw-bold" href="#"><i class="fa-solid fa-butterfly text-warning"></i> MotylCoin App</a>
-        <div class="d-flex align-items-center gap-3">
-            <span class="text-light">Cześć, <strong>{{ user.username }}</strong>! (ID: {{ user.user_code }})</span>
-            {% if user.is_admin %}
-                <a href="/admin" class="btn btn-warning btn-sm fw-bold">
-                    <i class="fa-solid fa-crown me-1"></i> Panel Admina
-                </a>
-            {% endif %}
-            <a href="{{ url_for('main.logout') }}" class="btn btn-outline-danger btn-sm">Wyloguj</a>
-        </div>
-    </div>
-</nav>
+{% endif %}
+{% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category, message in messages %}
+{{ message }}
 
-<div class="container">
-    
-    <!-- KOMUNIKATY FLASH -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        {% for category, message in messages %}
-          <div class="alert alert-{{ category }} alert-dismissible fade show card-custom mb-4" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
+{% endfor %} {% endif %} {% endwith %}
+Twoje Saldo
+{{ user.balance }} MC
+Koło Fortuny
+Zakręć kołem i zgarnij darmowe monety! (Cooldown: 30 min)
 
-    <!-- SALDO I KOŁO FORTUNY -->
-    <div class="row mb-4">
-        <div class="col-md-6 mb-3">
-            <div class="card card-custom p-4 text-center h-100 d-flex flex-column justify-content-center align-items-center">
-                <h5 class="text-muted mb-2">Twoje Saldo</h5>
-                <div class="balance-badge mb-2">
-                    <i class="fa-solid fa-coins me-2"></i><span id="user-balance">{{ user.balance }}</span> MC
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 mb-3">
-            <div class="card card-custom p-4 text-center h-100 d-flex flex-column justify-content-center align-items-center">
-                <h5 class="fw-bold mb-2"><i class="fa-solid fa-dharmachakra text-success me-2"></i>Koło Fortuny</h5>
-                <p class="text-muted small mb-3">Zakręć kołem i zgarnij darmowe monety! (Cooldown: 30 min)</p>
-                <button id="spin-btn" onclick="spinWheel()" class="btn spin-wheel-btn btn-lg w-100">
-                    <i class="fa-solid fa-rotate me-2"></i> Zakręć Kołem!
-                </button>
-                <div id="spin-result" class="mt-2 fw-bold"></div>
-            </div>
-        </div>
-    </div>
 
-    <div class="row">
-        <!-- LEWA KOLUMNA: PRZELEWY, KOD QR I LEADERBOARD -->
-        <div class="col-lg-6">
-            
-            <!-- PRZELEW P2P -->
-            <div class="card card-custom p-4 mb-4">
-                <h5 class="fw-bold mb-3"><i class="fa-solid fa-paper-plane text-primary me-2"></i>Szybki Przelew P2P</h5>
-                <form action="{{ url_for('main.transfer') }}" method="POST">
-                    <div class="mb-3">
-                        <label class="form-label">Odbiorca (Kod ID lub Nick):</label>
-                        <input type="text" name="receiver_id" class="form-control" placeholder="np. 05 lub Janek" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Kwota (MC):</label>
-                        <input type="number" name="amount" class="form-control" min="1" placeholder="10" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Tytuł przelewu:</label>
-                        <input type="text" name="title" class="form-control" placeholder="Za piwo / Przelew" value="Przelew P2P">
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100 fw-bold">Wyślij Monety</button>
-                </form>
-            </div>
+Szybki Przelew P2P
+Odbiorca (Kod ID lub Nick):
 
-            <!-- KOD QR -->
-            <div class="card card-custom p-4 mb-4 text-center">
-                <h5 class="fw-bold mb-2"><i class="fa-solid fa-qrcode me-2"></i>Twój Kod QR</h5>
-                <p class="text-muted small mb-3">Pokaż go innym, aby mogli szybko przesłać Ci Motyl Coiny</p>
-                <img src="data:image/png;base64,{{ qr_code }}" alt="QR Code" class="img-fluid mx-auto" style="max-width: 180px;">
-            </div>
+Kwota (MC):
 
-            <!-- RANKING TOP 5 -->
-            <div class="card card-custom p-4 mb-4">
-                <h5 class="fw-bold mb-3"><i class="fa-solid fa-trophy text-warning me-2"></i>TOP 5 Najbogatszych Imprezowiczów</h5>
-                <ul class="list-group list-group-flush">
-                    {% for top_user in leaderboard %}
-                    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                        <div>
-                            <span class="leaderboard-rank rank-{{ loop.index }}">#{{ loop.index }}</span>
-                            <strong>{{ top_user.username }}</strong>
-                        </div>
-                        <span class="badge bg-warning text-dark rounded-pill fs-6">{{ top_user.balance }} MC</span>
-                    </li>
-                    {% endfor %}
-                </ul>
-            </div>
+Tytuł przelewu:
+Przelew P2P
+Twój Kod QR
+Pokaż go innym, aby mogli szybko przesłać Ci Motyl Coiny
 
-        </div>
-
-        <!-- PRAWA KOLUMNA: POJEDYNKI P2P, SKLEP I HISTORIA -->
-        <div class="col-lg-6">
-
-            <!-- POJEDYNKI KAMIEŃ, PAPIER, NOŻYCE -->
-            <div class="card card-custom p-4 mb-4">
-                <h5 class="fw-bold mb-3"><i class="fa-solid fa-gamepad text-danger me-2"></i>Pojedynki P2P (Kamień, Papier, Nożyce)</h5>
-                
-                <!-- Formularz wyzwania -->
-                <form action="{{ url_for('main.create_duel') }}" method="POST" class="mb-4">
-                    <div class="row g-2">
-                        <div class="col-md-6">
-                            <select name="opponent_id" class="form-select">
-                                <option value="">Otwarty dla każdego</option>
+TOP 5 Najbogatszych Imprezowiczów
+	•	{% for top_user in leaderboard %} #{{ loop.index }} {{ top_user.username }}  {{ top_user.balance }} MC {% endfor %}
+Pojedynki P2P (Kamień, Papier, Nożyce)
+                                Otwarty dla każdego
                                 {% for u in all_users %}
-                                <option value="{{ u.id }}">{{ u.username }}</option>
+                                {{ u.username }}
                                 {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <input type="number" name="amount" class="form-control" value="20" min="5" placeholder="Stawka">
-                        </div>
-                        <div class="col-md-3">
-                            <button type="submit" class="btn btn-danger w-100 fw-bold">Rzuć Wyzwanie</button>
-                        </div>
-                    </div>
-                </form>
+                            
 
-                <!-- Aktywne zakłady / pojedynki -->
-                <h6 class="fw-bold text-muted mb-2">Otwarte Wyzwania:</h6>
-                {% if bets %}
-                    <div class="list-group">
-                        {% for bet in bets %}
-                        <div class="list-group-item d-flex justify-content-between align-items-center card-custom mb-2 p-3">
-                            <div>
-                                <strong>{{ bet.title }}</strong>
-                                <div class="text-muted small">Stawka: <span class="badge bg-secondary">{{ bet.amount }} MC</span></div>
-                            </div>
-                            {% if bet.creator_id != user.id %}
-                            <form action="{{ url_for('main.resolve_duel', bet_id=bet.id) }}" method="POST" class="d-flex gap-1">
-                                <button name="choice" value="rock" class="btn btn-sm btn-outline-dark" title="Kamień">🪨</button>
-                                <button name="choice" value="paper" class="btn btn-sm btn-outline-dark" title="Papier">📄</button>
-                                <button name="choice" value="scissors" class="btn btn-sm btn-outline-dark" title="Nożyce">✂️</button>
-                            </form>
-                            {% else %}
-                            <span class="badge bg-info text-dark">Oczekiwanie...</span>
-                            {% endif %}
-                        </div>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <p class="text-muted small">Brak aktywnych pojedynków. Bądź pierwszy!</p>
-                {% endif %}
-            </div>
 
-            <!-- SKLEP IMPREZOWY -->
-            <div class="card card-custom p-4 mb-4">
-                <h5 class="fw-bold mb-3"><i class="fa-solid fa-store text-info me-2"></i>Sklep Imprezowy</h5>
-                <div class="row g-2">
-                    {% for item in shop_items %}
-                    <div class="col-md-6 mb-2">
-                        <div class="border rounded p-3 text-center h-100 d-flex flex-column justify-content-between">
-                            <div>
-                                <h6 class="fw-bold mb-1">{{ item.name }}</h6>
-                                <p class="text-muted small mb-2">{{ item.description }}</p>
-                            </div>
-                            <form action="{{ url_for('main.buy_item', item_id=item.id) }}" method="POST">
-                                <button type="submit" class="btn btn-outline-success btn-sm w-100 fw-bold">
-                                    Kup za {{ item.price }} MC
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                    {% else %}
-                    <p class="text-muted small">Sklep jest obecnie pusty.</p>
-                    {% endfor %}
-                </div>
-            </div>
+Otwarte Wyzwania:
+{% if bets %} {% for bet in bets %}
+{{ bet.title }}
+Stawka: {{ bet.amount }} MC
+{% if bet.creator_id != user.id %} {% else %}
+Oczekiwanie...
+{% endif %} {% endfor %} {% else %}
+Brak aktywnych pojedynków. Bądź pierwszy!
+{% endif %}
+Sklep Imprezowy
+{% for item in shop_items %}
+{{ item.name }}
+{{ item.description }}
 
-            <!-- HISTORIA TRANSAKCJI -->
-            <div class="card card-custom p-4 mb-4">
-                <h5 class="fw-bold mb-3"><i class="fa-solid fa-clock-rotate-left me-2"></i>Ostatnie Transakcje</h5>
-                <ul class="list-group list-group-flush">
-                    {% for tx in history %}
-                    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                        <div>
-                            {% if tx.sender_id == user.id %}
-                                <span class="badge bg-danger me-1">Wydatek</span> Wysłałeś do <strong>{{ tx.receiver.username }}</strong>
-                            {% else %}
-                                <span class="badge bg-success me-1">Otrzymane</span> Od <strong>{{ tx.sender.username }}</strong>
-                            {% endif %}
-                            <div class="text-muted small">{{ tx.title }}</div>
-                        </div>
-                        <span class="fw-bold {% if tx.sender_id == user.id %}text-danger{% else %}text-success{% endif %}">
-                            {% if tx.sender_id == user.id %}-{% else %}+{% endif %}{{ tx.amount }} MC
-                        </span>
-                    </li>
-                    {% else %}
-                    <p class="text-muted small">Brak zarejestrowanych transakcji.</p>
-                    {% endfor %}
-                </ul>
-            </div>
+{% else %}
+Sklep jest obecnie pusty.
+{% endfor %}
+Ostatnie Transakcje
+	•	{% for tx in history %} {% if tx.sender_id == user.id %} Wydatek Wysłałeś do {{ tx.receiver.username }} {% else %} Otrzymane Od {{ tx.sender.username }} {% endif %} {{ tx.title }}  {% if tx.sender_id == user.id %}-{% else %}+{% endif %}{{ tx.amount }} MC  {% else %} Brak zarejestrowanych transakcji. {% endfor %}
 
-        </div>
-    </div>
-</div>
-
-<!-- MODAL DLA FLASH QUESTÓW -->
-<div class="modal fade" id="questModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+<!-- POP-UP POWITALNY: 27. URODZINY MAGDY & REGULAMIN -->
+<div class="modal fade" id="welcomeModal" tabindex="-1" aria-labelledby="welcomeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg card-custom">
-            <div class="modal-header bg-warning text-dark border-0">
-                <h5 class="modal-title fw-bold"><i class="fa-solid fa-bolt me-2"></i>SZYBKIE WYZWANIE (FLASH QUEST)!</h5>
+        <div class="modal-content glass-card border-0 rounded-4 shadow-lg overflow-hidden">
+            
+            <div class="modal-header border-0 text-center flex-column pb-0 pt-4" style="background: linear-gradient(135deg, #FFC6FF 0%, #FFADAD 100%);">
+                <button type="button" class="btn-close align-self-end me-2 mt-1" data-bs-dismiss="modal" aria-label="Zamknij"></button>
+                <div class="mb-2 fs-1">🦋🎂</div>
+                <h2 class="modal-title handwritten fs-1 fw-bold mb-1" id="welcomeModalLabel" style="color: var(--motyl-copper);">
+                    Witaj na 27. Urodzinach Magdy!
+                </h2>
+                <p class="badge bg-white text-dark rounded-pill px-3 py-1.5 fw-normal mb-3 shadow-sm border border-warning">
+                    ✨ MotylCoin Party Edition ✨
+                </p>
             </div>
-            <div class="modal-body text-center p-4">
-                <h4 id="quest-title" class="fw-bold mb-3">...</h4>
-                <p class="text-muted mb-3">Nagroda: <span id="quest-reward" class="badge bg-success fs-5">0 MC</span></p>
-                <div class="alert alert-info fw-bold mb-3">
-                    Pozostały czas: <span id="quest-timer">00:00</span>
+
+            <div class="modal-body p-4 fs-6">
+                <p class="text-center fw-semibold mb-3" style="color: #5C4D00;">
+                    Życzymy Ci niezapomnianej zabawy! Zapoznaj się z zasadami gry:
+                </p>
+
+                <div class="list-group list-group-flush rounded-3 border-0">
+                    <div class="list-group-item bg-transparent border-0 d-flex align-items-start px-0 py-2">
+                        <span class="fs-4 me-3">💰</span>
+                        <div>
+                            <strong>100 MC na Start:</strong> Każdy dostaje pakiet powitalny 100 Motyl Coinów.
+                        </div>
+                    </div>
+                    <div class="list-group-item bg-transparent border-0 d-flex align-items-start px-0 py-2">
+                        <span class="fs-4 me-3">📲</span>
+                        <div>
+                            <strong>Przelewy P2P & QR:</strong> Przesyłaj monety znajomym, stawiaj drinki i płac za pomocą kodu QR lub nicku.
+                        </div>
+                    </div>
+                    <div class="list-group-item bg-transparent border-0 d-flex align-items-start px-0 py-2">
+                        <span class="fs-4 me-3">🍹</span>
+                        <div>
+                            <strong>Sklep Imprezowy:</strong> Wymieniaj uzbierane MC na piosenki u DJ-a, potrawy z grilla i przywileje!
+                        </div>
+                    </div>
+                    <div class="list-group-item bg-transparent border-0 d-flex align-items-start px-0 py-2">
+                        <span class="fs-4 me-3">🎡</span>
+                        <div>
+                            <strong>Koło Fortuny & Pojedynki:</strong> Kręć kołem co 30 minut i rzucaj wyzwania innym w pojedynkach!
+                        </div>
+                    </div>
+                    <div class="list-group-item bg-transparent border-0 d-flex align-items-start px-0 py-2">
+                        <span class="fs-4 me-3">🥂</span>
+                        <div>
+                            <strong>Świetna Zabawa:</strong> Celebrujemy urodziny Magdy na 100% do białego rana!
+                        </div>
+                    </div>
                 </div>
-                <button id="quest-claim-btn" onclick="claimQuest()" class="btn btn-warning btn-lg fw-bold w-100">
-                    Odbierz Nagrodę! 🎉
+            </div>
+
+            <div class="modal-footer border-0 p-3 pt-0 justify-content-center">
+                <button type="button" class="btn btn-motyl-primary w-100 py-2.5 rounded-3 fw-bold fs-5 shadow" data-bs-dismiss="modal">
+                    <i class="fa-solid fa-champagne-glasses me-2"></i> Wchodzę do gry!
                 </button>
             </div>
+
         </div>
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    let activeQuestId = null;
-
-    async function spinWheel() {
-        const btn = document.getElementById('spin-btn');
-        const resultDiv = document.getElementById('spin-result');
-        btn.disabled = true;
-        resultDiv.innerText = "Kręcę...";
-
-        try {
-            const response = await fetch('/spin', { method: 'POST' });
-            const data = await response.json();
-
-            if (response.ok) {
-                resultDiv.className = "mt-2 fw-bold text-success";
-                resultDiv.innerText = data.result;
-                document.getElementById('user-balance').innerText = data.new_balance;
-            } else {
-                resultDiv.className = "mt-2 fw-bold text-danger";
-                resultDiv.innerText = data.error;
-            }
-        } catch (err) {
-            resultDiv.className = "mt-2 fw-bold text-danger";
-            resultDiv.innerText = "Błąd połączenia!";
-        } finally {
-            setTimeout(() => { btn.disabled = false; }, 3000);
+    document.addEventListener("DOMContentLoaded", function () {
+        if (!localStorage.getItem("motyl_welcome_27_seen")) {
+            var welcomeModal = new bootstrap.Modal(document.getElementById('welcomeModal'));
+            welcomeModal.show();
+            localStorage.setItem("motyl_welcome_27_seen", "true");
         }
-    }
-
-    async function checkActiveQuest() {
-        try {
-            const res = await fetch('/api/active-quest');
-            const data = await res.json();
-
-            if (data.active && !data.submitted) {
-                activeQuestId = data.id;
-                document.getElementById('quest-title').innerText = data.title;
-                document.getElementById('quest-reward').innerText = data.reward + " MC";
-                document.getElementById('quest-timer').innerText = data.remaining_seconds + "s";
-                
-                const questModal = new bootstrap.Modal(document.getElementById('questModal'));
-                questModal.show();
-            }
-        } catch (err) {
-            console.error("Błąd pobierania zadań:", err);
-        }
-    }
-
-    async function claimQuest() {
-        if (!activeQuestId) return;
-        const btn = document.getElementById('quest-claim-btn');
-        btn.disabled = true;
-
-        try {
-            const res = await fetch(`/api/claim-quest/${activeQuestId}`, { method: 'POST' });
-            const data = await res.json();
-
-            if (data.success) {
-                alert(data.mode === 'auto' ? `Otrzymano ${data.reward} MC!` : "Zgłoszenie wysłane do weryfikacji!");
-                window.location.reload();
-            } else {
-                alert(data.message);
-            }
-        } catch (err) {
-            alert("Błąd połączenia!");
-        }
-    }
-
-    setInterval(checkActiveQuest, 10000);
-    checkActiveQuest();
+    });
 </script>
-
-</body>
-</html>
