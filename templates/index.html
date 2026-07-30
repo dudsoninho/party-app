@@ -29,18 +29,16 @@
     <!-- Saldo -->
     <div class="card glass-card p-4 text-center mb-4">
         <span class="text-uppercase tracking-wider text-muted fw-bold small">Twoje Saldo</span>
-        <h2 class="display-3 handwritten fw-bold my-1" style="color: var(--motyl-copper);">{{ user.balance }} MC</h2>
+        <h2 id="user-balance-display" class="display-3 handwritten fw-bold my-1" style="color: var(--motyl-copper);">{{ user.balance }} MC</h2>
     </div>
 
-    <!-- Koło Fortuny (Naprawione na metodę POST) -->
-    <div class="card glass-card p-3 mb-4 text-center">
+    <!-- Koło Fortuny -->
+    <div class="card glass-card p-4 mb-4 text-center">
         <h3 class="handwritten fs-2 mb-1">🎡 Koło Fortuny</h3>
-        <p class="text-muted small mb-2">Zakręć kołem i zgarnij darmowe monety! (Cooldown: 30 min)</p>
-        <form method="POST" action="/spin">
-            <button type="submit" class="btn btn-pastel-yellow rounded-pill px-4 border shadow-sm">
-                🎡 Zakręć kołem
-            </button>
-        </form>
+        <p class="text-muted small mb-3">Zakręć kołem i zgarnij darmowe monety! (Cooldown: 30 min)</p>
+        <button type="button" class="btn btn-pastel-yellow rounded-pill px-4 py-2 border shadow-sm fw-bold fs-5" data-bs-toggle="modal" data-bs-target="#wheelModal">
+            ✨ Zakręć Kołem ✨
+        </button>
     </div>
 
     <!-- Szybki Przelew P2P -->
@@ -85,7 +83,7 @@
         </ul>
     </div>
 
-    <!-- Pojedynki P2P (Ścieżka /create_duel) -->
+    <!-- Pojedynki P2P -->
     <div class="card glass-card p-4 mb-4">
         <h3 class="handwritten fs-2 mb-3">⚔️ Pojedynki P2P (Kamień, Papier, Nożyce)</h3>
         <form method="POST" action="/create_duel" class="mb-3">
@@ -170,11 +168,55 @@
 
 </div>
 
+<!-- MODAL KOŁO FORTUNY -->
+<div class="modal fade" id="wheelModal" tabindex="-1" aria-labelledby="wheelModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content glass-card border-0 rounded-4 shadow-lg overflow-hidden" style="background: #FFFDF9;">
+            
+            <div class="modal-header border-0 text-center flex-column pb-2 pt-4" style="background: linear-gradient(135deg, #FDFFB6 0%, #FFC6FF 100%);">
+                <button type="button" class="btn-close align-self-end me-2 mt-1" data-bs-dismiss="modal" aria-label="Zamknij"></button>
+                <h2 class="handwritten display-5 fw-bold mb-0" id="wheelModalLabel" style="color: var(--motyl-copper); font-family: 'Caveat', cursive;">
+                    🎡 Koło Fortuny 🦋
+                </h2>
+                <p class="text-muted small mb-0">Zakręć i sprawdź ile monet wygrasz!</p>
+            </div>
+
+            <div class="modal-body p-4 text-center position-relative">
+                <!-- Wskaźnik koła (strzałka) -->
+                <div style="font-size: 2.2rem; position: relative; top: 18px; z-index: 10; color: #A24731; text-shadow: 0 2px 4px rgba(0,0,0,0.15);">
+                    ▼
+                </div>
+
+                <!-- Wizualizacja Koła -->
+                <div class="wheel-wrapper my-2 mx-auto" style="width: 250px; height: 250px; position: relative;">
+                    <div id="wheelGraphic" style="width: 100%; height: 100%; border-radius: 50%; border: 6px solid var(--motyl-border-gold); background: conic-gradient(#FFC6FF 0deg 60deg, #FFADAD 60deg 120deg, #FDFFB6 120deg 180deg, #CAFFBF 180deg 240deg, #9BF6FF 240deg 300deg, #E0BBE4 300deg 360deg); transition: transform 4s cubic-bezier(0.15, 0.9, 0.2, 1); box-shadow: 0 8px 20px rgba(0,0,0,0.12); display: flex; align-items: center; justify-content: center; position: relative;">
+                        <div style="position: absolute; font-weight: bold; font-family: 'Caveat', cursive; font-size: 1.3rem; transform: rotate(30deg) translateY(-80px);">+10</div>
+                        <div style="position: absolute; font-weight: bold; font-family: 'Caveat', cursive; font-size: 1.3rem; transform: rotate(90deg) translateY(-80px);">+25</div>
+                        <div style="position: absolute; font-weight: bold; font-family: 'Caveat', cursive; font-size: 1.3rem; transform: rotate(150deg) translateY(-80px);">+50</div>
+                        <div style="position: absolute; font-weight: bold; font-family: 'Caveat', cursive; font-size: 1.3rem; transform: rotate(210deg) translateY(-80px);">+5</div>
+                        <div style="position: absolute; font-weight: bold; font-family: 'Caveat', cursive; font-size: 1.3rem; transform: rotate(270deg) translateY(-80px);">+100</div>
+                        <div style="position: absolute; font-weight: bold; font-family: 'Caveat', cursive; font-size: 1.3rem; transform: rotate(330deg) translateY(-80px);">+15</div>
+                        
+                        <div style="width: 50px; height: 50px; background: white; border-radius: 50%; border: 3px solid var(--motyl-copper); z-index: 5; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">🦋</div>
+                    </div>
+                </div>
+
+                <!-- Wynik / Komunikat -->
+                <div id="wheelResultMsg" class="mt-3 fw-bold fs-5 text-success" style="min-height: 35px;"></div>
+
+                <button id="spinBtn" type="button" class="btn btn-motyl-primary w-100 py-2.5 rounded-3 fw-bold fs-5 shadow mt-1" onclick="startSpin()">
+                    ✨ Losuj Monety ✨
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 <!-- MODAL POWITALNY -->
 <div class="modal fade" id="welcomeModal" tabindex="-1" aria-labelledby="welcomeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content glass-card border-0 rounded-4 shadow-lg overflow-hidden" style="background: #FFFDF9;">
-            
             <div class="modal-header border-0 text-center flex-column pb-2 pt-4" style="background: linear-gradient(135deg, #FFC6FF 0%, #FFADAD 100%);">
                 <button type="button" class="btn-close align-self-end me-2 mt-1" data-bs-dismiss="modal" aria-label="Zamknij"></button>
                 <h1 class="handwritten display-5 fw-bold mb-0" id="welcomeModalLabel" style="color: var(--motyl-copper); font-family: 'Caveat', cursive;">
@@ -210,12 +252,68 @@
                     <i class="fa-solid fa-champagne-glasses me-2"></i> Dołącz do zabawy!
                 </button>
             </div>
-
         </div>
     </div>
 </div>
 
 <script>
+    let currentRotation = 0;
+    let isSpinning = false;
+
+    function startSpin() {
+        if (isSpinning) return;
+
+        const spinBtn = document.getElementById('spinBtn');
+        const resultMsg = document.getElementById('wheelResultMsg');
+        const wheel = document.getElementById('wheelGraphic');
+
+        spinBtn.disabled = true;
+        resultMsg.innerHTML = '<span class="text-muted fs-6"><i class="fa-solid fa-spinner fa-spin me-2"></i>Losowanie wygranej...</span>';
+
+        fetch('/spin', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                resultMsg.innerHTML = `<span class="text-danger fs-6">⏳ ${data.error}</span>`;
+                spinBtn.disabled = false;
+                return;
+            }
+
+            isSpinning = true;
+
+            // Wykonujemy co najmniej 5 pełnych obrotów + losowy kąt
+            const randomDegree = Math.floor(Math.random() * 360);
+            currentRotation += 1800 + randomDegree;
+
+            wheel.style.transform = `rotate(${currentRotation}deg)`;
+
+            // Po zakończeniu 4-sekundowej animacji obrotu:
+            setTimeout(() => {
+                isSpinning = false;
+                spinBtn.disabled = false;
+
+                const amount = data.change || data.result || 'wygraną!';
+                resultMsg.innerHTML = `<span class="text-success fs-3 handwritten fw-bold">🎉 Wygrałeś: ${amount} MC! 🎉</span>`;
+
+                if (data.new_balance !== undefined) {
+                    const balanceElem = document.getElementById('user-balance-display');
+                    if (balanceElem) {
+                        balanceElem.innerText = data.new_balance + ' MC';
+                    }
+                }
+            }, 4000);
+        })
+        .catch(err => {
+            resultMsg.innerHTML = '<span class="text-danger fs-6">Błąd połączenia. Spróbuj ponownie.</span>';
+            spinBtn.disabled = false;
+        });
+    }
+
     document.addEventListener("DOMContentLoaded", function () {
         if (!localStorage.getItem("motyl_welcome_27_seen")) {
             var welcomeModalElement = document.getElementById('welcomeModal');
@@ -231,7 +329,7 @@
             const isTyping = activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA' || activeElement.tagName === 'SELECT');
             const isModalOpen = document.querySelector('.modal.show') !== null;
 
-            if (!isTyping && !isModalOpen) {
+            if (!isTyping && !isModalOpen && !isSpinning) {
                 window.location.reload();
             }
         }, 15000);
