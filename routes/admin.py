@@ -229,3 +229,17 @@ def quick_reward():
         flash('Niepoprawna kwota nagrody.', 'danger')
         
     return redirect(url_for('admin.admin_panel'))
+
+@admin_bp.route('/reset_pin/<int:user_id>', methods=['POST'])
+def reset_user_pin_admin(user_id):
+    user = User.query.get_or_404(user_id)
+    new_pin = request.form.get('new_pin', '').strip()
+    
+    if len(new_pin) == 4 and new_pin.isdigit():
+        user.pin = new_pin
+        db.session.commit()
+        flash(f'Zmieniono PIN użytkownika {user.username} na {new_pin}.', 'success')
+    else:
+        flash('PIN musi składać się dokładnie z 4 cyfr!', 'danger')
+        
+    return redirect(url_for('admin.admin_panel'))

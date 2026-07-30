@@ -80,7 +80,8 @@ def index():
 @main_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form.get('username', '').strip()
+        # Pobieramy 'username' lub 'nick' z formularza
+        username = (request.form.get('username') or request.form.get('nick') or '').strip()
         pin = request.form.get('pin', '').strip()
 
         if not username or not pin or len(pin) != 4 or not pin.isdigit():
