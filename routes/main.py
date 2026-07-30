@@ -471,3 +471,7 @@ def complete_task(task_id):
         flash(f'Zlecenie zatwierdzone! Przelano {task.reward} MC dla {worker.username}.', 'success')
     
     return redirect(url_for('main.index'))
+@main.route('/init-db')
+def init_db():
+    db.create_all()
+    return "Baza danych zaktualizowana! Tabela zleceń została utworzona."
